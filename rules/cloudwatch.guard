@@ -1,0 +1,12 @@
+#
+# Amazon CloudWatch checks
+# This rule checks if log group retention is set
+# DEFAULT: This rule assumes that if retention time is not explicitly set then it is indefinite by default. 
+# If this default will be changed in the future then rule should be changed.
+
+let log_groups = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
+
+rule ensure_all_loggroups_have_retention when %log_groups !empty {
+    let retention = %log_groups.Properties.RetentionInDays
+    %retention exists
+}

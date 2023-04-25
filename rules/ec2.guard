@@ -1,0 +1,66 @@
+#
+# Amazon EC2 checks
+# These rules focus on 
+# 1/ removing Bastion hosts by using AWS Systems Manager Session Manager
+
+let sec_groups_ingress = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress' ]
+
+let sec_groups = Resources.*[ Type == 'AWS::EC2::SecurityGroup' ]
+
+let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance']
+
+# This rule recommends using Systems Manager Session Manager instead of
+# creating bastion hosts.
+#
+rule from_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
+    %sec_groups_ingress.Properties {
+        when FromPort exists {
+            FromPort != 22
+        }
+    }
+    %sec_groups.Properties {
+        SecurityGroupIngress[*] {
+            when FromPort exists {
+                FromPort != 22
+            }
+        }
+    }
+}
+
+rule to_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
+    %sec_groups_ingress.Properties {
+        when ToPort exists {
+            ToPort != 22
+        }
+    }
+    %sec_groups.Properties {
+        SecurityGroupIngress[*] {
+            when ToPort exists {
+                ToPort != 22
+            }
+        }
+    }
+}
+
+rule port_range_includes_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
+    %sec_groups_ingress.Properties {
+        when FromPort exists {
+            when ToPort exists FromPort != 22 ToPort != 22 {
+                FromPort > 22 or 
+                ToPort < 22
+            }
+        }
+    }
+
+    %sec_groups.Properties {
+        SecurityGroupIngress[*] {
+            when FromPort exists {
+                when ToPort exists FromPort != 22 ToPort != 22 {
+                    FromPort > 22 or
+                    ToPort < 22
+                }
+            }
+        }
+    }
+}
+

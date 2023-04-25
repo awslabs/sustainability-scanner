@@ -1,0 +1,98 @@
+---
+- name: TestEmptyTemplate  
+  input: {}
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: SKIP
+
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: SKIP
+
+- name: TestOneBucketWithLC
+  input:
+    Resources:
+      S3Bucket-1:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          LifecycleConfiguration:
+            Rules:
+            - Id: GlacierRule
+              Prefix: glacier
+              Status: Enabled
+              ExpirationInDays: 365
+              Transitions:
+                - TransitionInDays: 1
+                  StorageClass: GLACIER
+        DeletionPolicy: Retain
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: PASS
+
+- name: TestOneBucketWithoutLC
+  input:
+    Resources:
+      S3Bucket-1:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+        DeletionPolicy: Retain
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: FAIL
+
+- name: TestTwoBucketsWithLC
+  input:
+    Resources:
+      S3Bucket-1:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          LifecycleConfiguration:
+            Rules:
+            - Id: GlacierRule
+              Prefix: glacier
+              Status: Enabled
+              ExpirationInDays: 365
+              Transitions:
+                - TransitionInDays: 1
+                  StorageClass: GLACIER
+        DeletionPolicy: Retain
+      S3Bucket-2:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          LifecycleConfiguration:
+            Rules:
+            - Id: GlacierRule
+              Prefix: glacier
+              Status: Enabled
+              ExpirationInDays: 365
+              Transitions:
+                - TransitionInDays: 1
+                  StorageClass: GLACIER
+        DeletionPolicy: Retain
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: PASS
+
+- name: TestTwoBucketsWithoutLC
+  input:
+    Resources:
+      S3Bucket-1:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          IntelligentTieringConfigurations:
+            - Id: Tier1
+              Status: Enabled
+              Tierings:
+                - AccessTier: ARCHIVE_ACCESS
+                  Days: 90
+        DeletionPolicy: Retain
+      S3Bucket-2:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+        DeletionPolicy: Retain
+  expectations:
+    rules:
+      ensure_all_buckets_have_lifecycle_configuration: FAIL

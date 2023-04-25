@@ -1,0 +1,140 @@
+---
+- name: TestEmptyTemplate  
+  input: {}
+  expectations:
+    rules:
+      check_glue_job_timeout: SKIP
+      check_glue_job_workernodes: SKIP
+      check_glue_job_allocatedcapacity: SKIP
+      check_glue_job_maxcapacity: SKIP
+
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      check_glue_job_timeout: SKIP
+      check_glue_job_workernodes: SKIP
+      check_glue_job_allocatedcapacity: SKIP
+      check_glue_job_maxcapacity: SKIP
+
+- name: TestWithDefaultTimeout
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+  expectations:
+    rules:
+      check_glue_job_timeout: FAIL
+      check_glue_job_workernodes: SKIP
+      check_glue_job_allocatedcapacity: FAIL
+      check_glue_job_maxcapacity: FAIL
+
+- name: TestWithoutDefaultTimeout
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+          Timeout: 60
+  expectations:
+    rules:
+      check_glue_job_timeout: PASS
+      check_glue_job_workernodes: SKIP
+      check_glue_job_allocatedcapacity: FAIL
+      check_glue_job_maxcapacity: FAIL
+
+- name: TestWithDefaultWorkerNodes
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+          Timeout: 60
+          WorkerType: Standard
+  expectations:
+    rules:
+      check_glue_job_timeout: PASS
+      check_glue_job_workernodes: FAIL
+      check_glue_job_allocatedcapacity: FAIL
+      check_glue_job_maxcapacity: FAIL
+
+- name: TestWithoutDefaultWorkerNodes
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+          Timeout: 60
+          WorkerType: Standard
+          NumberOfWorkers: 5
+  expectations:
+    rules:
+      check_glue_job_timeout: PASS
+      check_glue_job_workernodes: PASS
+      check_glue_job_allocatedcapacity: FAIL
+      check_glue_job_maxcapacity: FAIL
+
+- name: TestWithAllocatedCapacity
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+          Timeout: 60
+          WorkerType: Standard
+          NumberOfWorkers: 5
+          AllocatedCapacity: 10
+  expectations:
+    rules:
+      check_glue_job_timeout: PASS
+      check_glue_job_workernodes: PASS
+      check_glue_job_allocatedcapacity: PASS
+      check_glue_job_maxcapacity: FAIL
+
+- name: TestWithMaxCapacity
+  input:
+    Resources:
+      MyGlueJob:
+        Type: AWS::Glue::Job
+        Properties:
+          Role: !Ref AWSGlueJobRole
+          Command: {
+            "Name" : "glueetl",
+            "ScriptLocation": !Sub "s3://${ArtifactBucketName}/process_sales_data.py"
+          }
+          Timeout: 60
+          AllocatedCapacity: 10
+          MaxCapacity: 10
+  expectations:
+    rules:
+      check_glue_job_timeout: PASS
+      check_glue_job_workernodes: SKIP
+      check_glue_job_allocatedcapacity: PASS
+      check_glue_job_maxcapacity: PASS

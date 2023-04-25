@@ -1,0 +1,44 @@
+#
+# Amazon CloudFront checks
+# These rules check the configuration of your Amazon CloudFront Distribution
+# It checks that the compression is enabled and that the time to live (TTL)
+# for the objects is according to the recommended values.
+
+let cf = Resources.*[ Type == 'AWS::CloudFront::Distribution' ]
+
+let cf_def_ttl_policies = Resources.*[ 
+    Type == 'AWS::CloudFront::CachePolicy' 
+]
+
+rule ensure_default_compression_on when %cf !empty {
+    let compression = %cf.Properties.DistributionConfig.DefaultCacheBehavior.Compress
+    %compression exists
+    %compression == true
+}
+
+rule ensure_compression_on when %cf !empty {
+    %cf {
+        Properties.DistributionConfig {
+            CacheBehaviors[*] {
+                Compress exists
+                Compress == true
+            }
+        }
+    }
+}
+
+# It is recommended to keep DefaultTTL and MaxTTL above 24h
+rule check_default_ttl when %cf_def_ttl_policies !empty {
+    let config = %cf_def_ttl_policies.Properties.CachePolicyConfig
+    when %config.DefaultTTL exists {
+        %config.DefaultTTL >= 86400 
+    }
+}
+
+# It is recommended to keep DefaultTTL and MaxTTL above 24h
+rule check_max_ttl when %cf_def_ttl_policies !empty {
+    let config = %cf_def_ttl_policies.Properties.CachePolicyConfig
+    when %config.MaxTTL exists {
+        %config.MaxTTL >= 86400 
+    }
+}

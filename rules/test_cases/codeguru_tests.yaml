@@ -1,0 +1,56 @@
+---
+- name: TestEmptyTemplate  
+  input: {}
+  expectations:
+    rules:
+      check_codeguru_association: SKIP
+
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      check_codeguru_association: SKIP
+
+- name: TestWithCodeGuruAssociation
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::CodeCommit::Repository
+        Properties:
+          RepositoryName: MyRepositoryName
+      MyRepositoryAssociation:
+        Type: AWS::CodeGuruReviewer::RepositoryAssociation
+        Properties:
+          Name: MyRepositoryName
+          Type: CodeCommit
+  expectations:
+    rules:
+      check_codeguru_association: PASS
+
+- name: TestWithoutCodeGuruAssociation
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::CodeCommit::Repository
+        Properties:
+          RepositoryName: MyRepositoryName
+  expectations:
+    rules:
+      check_codeguru_association: FAIL
+
+- name: TestWithCodeGuruAssociation
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::CodeCommit::Repository
+        Properties:
+          RepositoryName: MyRepositoryName
+      MyRepositoryAssociation:
+        Type: AWS::CodeGuruReviewer::RepositoryAssociation
+        Properties:
+          Name: MyRepositoryName2
+          Type: CodeCommit
+  expectations:
+    rules:
+      check_codeguru_association: FAIL

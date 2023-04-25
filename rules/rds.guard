@@ -1,0 +1,13 @@
+#
+# Amazon RDS Checks
+# This rule checks if Amazon RDS Performance Insights is enabled that helps you optimize your database. 
+# Performance insights offers a rolling seven days of performance data history at no charge.
+# You will be charged for analyzing longer-term performance trends. 
+# See pricing at https://aws.amazon.com/rds/performance-insights/pricing/
+
+let rds_db = Resources.*[Type == 'AWS::RDS::DBInstance']
+
+rule check_rds_performanceinsights_enabled when %rds_db !empty {
+    %rds_db.Properties.EnablePerformanceInsights exists
+    %rds_db.Properties.EnablePerformanceInsights == 'true'
+    }

@@ -1,0 +1,18 @@
+#
+# AWS Graviton Checks
+# These rules checks if Amazon RDS instances and AWS Lambda functions are using AWS Graviton based processors 
+# that are more power-efficient.
+
+let rds_db = Resources.*[Type == 'AWS::RDS::DBInstance']
+ let valid_instance_classes = ['db.m6g', 'db.m6gd', 'db.x2g', 'db.r6g', 'db.r6gd', 'db.t4g']
+
+
+rule check_graviton_instance_usage_in_rds when %rds_db !empty {
+    %rds_db.Properties.DBInstanceClass in %valid_instance_classes
+    }
+
+let lambda_function = Resources.*[Type == 'AWS::Lambda::Function']
+
+rule check_graviton_architecture_usage_in_lambda when %lambda_function !empty {
+    %lambda_function.Properties.Architectures == 'arm64'
+ }

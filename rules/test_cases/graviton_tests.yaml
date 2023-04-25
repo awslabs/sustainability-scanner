@@ -1,0 +1,151 @@
+---
+- name: TestEmptyTemplate  
+  input: {}
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: SKIP
+
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: SKIP
+
+- name: TestRDSWithGraviton
+  input:
+    Resources:
+      RDSInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBName: 'DBName'
+          AllocatedStorage: '5'
+          DBInstanceClass: db.m6g
+          Engine: MySQL
+          EngineVersion: 5.6.19
+          MasterUsername: 'DBUser'
+          MasterUserPassword: 'DBPassword'
+          DBParameterGroupName: 'MyRDSParamGroup'
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: PASS
+      check_graviton_architecture_usage_in_lambda: SKIP
+
+- name: TestRDSWithoutGraviton
+  input:
+    Resources:
+      RDSInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBName: 'DBName'
+          AllocatedStorage: '5'
+          DBInstanceClass: db.t2
+          Engine: MySQL
+          EngineVersion: 5.6.19
+          MasterUsername: 'DBUser'
+          MasterUserPassword: 'DBPassword'
+          DBParameterGroupName: 'MyRDSParamGroup'
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: FAIL
+      check_graviton_architecture_usage_in_lambda: SKIP
+
+- name: TestLambdaWithZipAndWithoutGraviton
+  input:
+    Resources:
+      LambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+          Architectures: 'x86'
+          FunctionName:
+            Fn::Sub: lambda-function-0200
+          Description: LambdaFunctioni of nodejs10.x.
+          Runtime: nodejs10.x
+          Code:
+            ZipFile:
+              "exports.handler = function(event, context){\n
+                var sample = sample;"
+          Handler: ${LambdaHandlerPath}
+          MemorySize: 128
+          Timeout: 10
+          PackageType: 'Zip'
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: FAIL
+
+- name: TestLambdaWithZipAndWithGraviton
+  input:
+    Resources:
+      LambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+          Architectures: 'arm64'
+          FunctionName:
+            Fn::Sub: lambda-function-0200
+          Description: LambdaFunctioni of nodejs10.x.
+          Runtime: nodejs10.x
+          Code:
+            ZipFile:
+              "exports.handler = function(event, context){\n
+                var sample = sample;"
+          Handler: ${LambdaHandlerPath}
+          MemorySize: 128
+          Timeout: 10
+          PackageType: 'Zip' 
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: PASS
+
+- name: TestLambdaWithImageAndWithGraviton
+  input:
+    Resources:
+      LambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+          Architectures: 'arm64'
+          FunctionName:
+            Fn::Sub: lambda-function-0200
+          Description: LambdaFunctioni of nodejs10.x.
+          Runtime: nodejs10.x
+          Code:
+            ZipFile:
+              "exports.handler = function(event, context){\n
+                var sample = sample;"
+          Handler: ${LambdaHandlerPath}
+          MemorySize: 128
+          Timeout: 10
+          PackageType: 'Image' 
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: PASS
+
+- name: TestLambdaWithImageAndWithoutGraviton
+  input:
+    Resources:
+      LambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+          Architectures: 'x86'
+          FunctionName:
+            Fn::Sub: lambda-function-0200
+          Description: LambdaFunctioni of nodejs10.x.
+          Runtime: nodejs10.x
+          Code:
+            ZipFile:
+              "exports.handler = function(event, context){\n
+                var sample = sample;"
+          Handler: ${LambdaHandlerPath}
+          MemorySize: 128
+          Timeout: 10
+          PackageType: 'Image'
+  expectations:
+    rules:
+      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_architecture_usage_in_lambda: FAIL
+
+      

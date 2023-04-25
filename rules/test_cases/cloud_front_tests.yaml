@@ -1,0 +1,142 @@
+- name: TestDefaultCompressionOn
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            DefaultCacheBehavior:
+              Compress: true
+  expectations:
+    rules:
+      ensure_default_compression_on: PASS
+
+- name: TestDefaultCompressionOff
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            DefaultCacheBehavior:
+              Compress: false
+  expectations:
+    rules:
+      ensure_default_compression_on: FAIL
+
+- name: TestDefaultCompressionMissing
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            DefaultCacheBehavior:
+  expectations:
+    rules:
+      ensure_default_compression_on: FAIL      
+
+- name: TestCacheCompressionOn
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            CacheBehaviors:
+              - PathPattern: pattern/1
+                Compress: true
+  expectations:
+    rules:
+      ensure_compression_on: PASS
+      ensure_default_compression_on: FAIL
+
+- name: TestOneCacheCompressionOff
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            CacheBehaviors:
+              - PathPattern: pattern/1
+                Compress: true
+              - PathPattern: pattern/2
+  expectations:
+    rules:
+      ensure_compression_on: FAIL
+      ensure_default_compression_on: FAIL
+
+- name: TestOneCacheCompressionOff
+  input:
+    Resources:
+      CF-Distribution-1:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+          DistributionConfig: 
+            DefaultCacheBehavior:
+              Compress: true
+            CacheBehaviors:
+              - PathPattern: pattern/1
+                Compress: true
+              - PathPattern: pattern/2
+                Compress: true
+  expectations:
+    rules:
+      ensure_compression_on: PASS
+      ensure_default_compression_on: PASS
+
+- name: TestNoCustomTTL
+  input:
+    Resources:
+      CF-Policy:
+        Type: 'AWS::CloudFront::CachePolicy'
+        Properties:
+          CachePolicyConfig: 
+            Comment: 'Just a comment'
+  expectations:
+    rules:
+      check_default_ttl: SKIP
+      check_max_ttl: SKIP
+
+- name: TestSmallDefaultTTL
+  input:
+    Resources:
+      CF-Policy:
+        Type: 'AWS::CloudFront::CachePolicy'
+        Properties:
+          CachePolicyConfig: 
+            DefaultTTL: 1000
+            Comment: 'Just a comment'
+  expectations:
+    rules:
+      check_default_ttl: FAIL
+
+- name: TestSmallMaxTTL
+  input:
+    Resources:
+      CF-Policy:
+        Type: 'AWS::CloudFront::CachePolicy'
+        Properties:
+          CachePolicyConfig: 
+            DefaultTTL: 86400
+            MaxTTL: 86399
+            Comment: 'Just a comment'
+  expectations:
+    rules:
+      check_max_ttl: FAIL
+
+- name: TestValidTTL
+  input:
+    Resources:
+      CF-Policy:
+        Type: 'AWS::CloudFront::CachePolicy'
+        Properties:
+          CachePolicyConfig: 
+            DefaultTTL: 86400
+            MaxTTL: 86401
+            Comment: 'Just a comment'
+  expectations:
+    rules:
+      check_policy_ttl: PASS
+      check_max_ttl: PASS

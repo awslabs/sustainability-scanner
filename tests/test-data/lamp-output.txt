@@ -1,0 +1,293 @@
+{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "rest_api_compression_exists",
+    "rest_api_compression_min",
+    "rest_api_compression_max"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_default_compression_on",
+    "check_max_ttl",
+    "ensure_compression_on",
+    "check_default_ttl"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_loggroups_have_retention"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_codeguru_association"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "port_range_includes_ssh",
+    "user_data_to_AMI",
+    "from_port_is_ssh",
+    "graphics_acceleration_instead_of_gpu",
+    "to_port_is_ssh"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "emr_use_spot",
+    "emr_target_spot_config_configured"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_glue_job_maxcapacity",
+    "check_glue_job_timeout",
+    "check_glue_job_workernodes",
+    "check_glue_job_allocatedcapacity"
+  ],
+  "compliant": []
+}lamp.json Status = FAIL
+FAILED rules
+graviton.guard/check_graviton_instance_usage_in_rds           FAIL
+---
+{
+  "name": "",
+  "metadata": {},
+  "status": "FAIL",
+  "not_compliant": [
+    {
+      "Rule": {
+        "name": "check_graviton_instance_usage_in_rds",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Clause": {
+              "Binary": {
+                "context": " %rds_db[*].Properties.DBInstanceClass IN  %valid_instance_classes",
+                "messages": {
+                  "custom_message": null,
+                  "error_message": "Check was not compliant as property [/Resources/MySQLDatabase/Properties/DBInstanceClass[L:502,C:27]] was not present in [(resolved, Path=[L:0,C:0] Value=[\"db.m6g\",\"db.m6gd\",\"db.x2g\",\"db.r6g\",\"db.r6gd\",\"db.t4g\"])]"
+                },
+                "check": {
+                  "InResolved": {
+                    "from": {
+                      "path": "/Resources/MySQLDatabase/Properties/DBInstanceClass",
+                      "value": {
+                        "Ref": "DBInstanceClass"
+                      }
+                    },
+                    "to": [
+                      {
+                        "path": "",
+                        "value": [
+                          "db.m6g",
+                          "db.m6gd",
+                          "db.x2g",
+                          "db.r6g",
+                          "db.r6gd",
+                          "db.t4g"
+                        ]
+                      }
+                    ],
+                    "comparison": [
+                      "In",
+                      false
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "not_applicable": [
+    "check_graviton_architecture_usage_in_lambda"
+  ],
+  "compliant": []
+}lamp.json Status = FAIL
+FAILED rules
+rds.guard/check_rds_performanceinsights_enabled    FAIL
+---
+{
+  "name": "",
+  "metadata": {},
+  "status": "FAIL",
+  "not_compliant": [
+    {
+      "Rule": {
+        "name": "check_rds_performanceinsights_enabled",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Clause": {
+              "Unary": {
+                "context": " %rds_db[*].Properties.EnablePerformanceInsights EXISTS  ",
+                "messages": {
+                  "custom_message": "",
+                  "error_message": "Check was not compliant as property [EnablePerformanceInsights] is missing. Value traversed to [Path=/Resources/MySQLDatabase/Properties[L:496,C:20] Value={\"Engine\":\"MySQL\",\"DBName\":{\"Ref\":\"DBName\"},\"MultiAZ\":{\"Ref\":\"MultiAZDatabase\"},\"MasterUsername\":{\"Ref\":\"DBUser\"},\"MasterUserPassword\":{\"Ref\":\"DBPassword\"},\"DBInstanceClass\":{\"Ref\":\"DBInstanceClass\"},\"AllocatedStorage\":{\"Ref\":\"DBAllocatedStorage\"},\"VPCSecurityGroups\":[{\"Fn::GetAtt\":[\"DBEC2SecurityGroup\",\"GroupId\"]}]}]."
+                },
+                "check": {
+                  "UnResolved": {
+                    "value": {
+                      "traversed_to": {
+                        "path": "/Resources/MySQLDatabase/Properties",
+                        "value": {
+                          "Engine": "MySQL",
+                          "DBName": {
+                            "Ref": "DBName"
+                          },
+                          "MultiAZ": {
+                            "Ref": "MultiAZDatabase"
+                          },
+                          "MasterUsername": {
+                            "Ref": "DBUser"
+                          },
+                          "MasterUserPassword": {
+                            "Ref": "DBPassword"
+                          },
+                          "DBInstanceClass": {
+                            "Ref": "DBInstanceClass"
+                          },
+                          "AllocatedStorage": {
+                            "Ref": "DBAllocatedStorage"
+                          },
+                          "VPCSecurityGroups": [
+                            {
+                              "Fn::GetAtt": [
+                                "DBEC2SecurityGroup",
+                                "GroupId"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "remaining_query": "EnablePerformanceInsights",
+                      "reason": "Could not find key EnablePerformanceInsights inside struct at path /Resources/MySQLDatabase/Properties[L:496,C:20]"
+                    },
+                    "comparison": [
+                      "Exists",
+                      false
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "Clause": {
+              "Binary": {
+                "context": " %rds_db[*].Properties.EnablePerformanceInsights EQUALS  \"true\"",
+                "messages": {
+                  "custom_message": "",
+                  "error_message": "Check was not compliant as property [EnablePerformanceInsights] to compare from is missing. Value traversed to [Path=/Resources/MySQLDatabase/Properties[L:496,C:20] Value={\"Engine\":\"MySQL\",\"DBName\":{\"Ref\":\"DBName\"},\"MultiAZ\":{\"Ref\":\"MultiAZDatabase\"},\"MasterUsername\":{\"Ref\":\"DBUser\"},\"MasterUserPassword\":{\"Ref\":\"DBPassword\"},\"DBInstanceClass\":{\"Ref\":\"DBInstanceClass\"},\"AllocatedStorage\":{\"Ref\":\"DBAllocatedStorage\"},\"VPCSecurityGroups\":[{\"Fn::GetAtt\":[\"DBEC2SecurityGroup\",\"GroupId\"]}]}]."
+                },
+                "check": {
+                  "UnResolved": {
+                    "value": {
+                      "traversed_to": {
+                        "path": "/Resources/MySQLDatabase/Properties",
+                        "value": {
+                          "Engine": "MySQL",
+                          "DBName": {
+                            "Ref": "DBName"
+                          },
+                          "MultiAZ": {
+                            "Ref": "MultiAZDatabase"
+                          },
+                          "MasterUsername": {
+                            "Ref": "DBUser"
+                          },
+                          "MasterUserPassword": {
+                            "Ref": "DBPassword"
+                          },
+                          "DBInstanceClass": {
+                            "Ref": "DBInstanceClass"
+                          },
+                          "AllocatedStorage": {
+                            "Ref": "DBAllocatedStorage"
+                          },
+                          "VPCSecurityGroups": [
+                            {
+                              "Fn::GetAtt": [
+                                "DBEC2SecurityGroup",
+                                "GroupId"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "remaining_query": "EnablePerformanceInsights",
+                      "reason": "Could not find key EnablePerformanceInsights inside struct at path /Resources/MySQLDatabase/Properties[L:496,C:20]"
+                    },
+                    "comparison": [
+                      "Eq",
+                      false
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "not_applicable": [],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_buckets_have_lifecycle_configuration"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "iamuserpassword"
+  ],
+  "compliant": []
+}

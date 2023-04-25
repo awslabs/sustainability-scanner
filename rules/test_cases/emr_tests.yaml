@@ -1,0 +1,74 @@
+---
+- name: TestEmptyTemplate  
+  input: {}
+  expectations:
+    rules:
+      emr_use_spot: SKIP
+      emr_target_spot_config_configured: SKIP
+
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      emr_use_spot: SKIP
+      emr_target_spot_config_configured: SKIP
+
+- name: TestWithInstanceGroupAndNoSpot
+  input:
+    Resources:
+      MyInstanceGroup:
+        Type: AWS::EMR::InstanceGroupConfig
+        Properties:
+          InstanceCount: 5
+          InstanceRole: TASK
+          InstanceType: 1
+          JobFlowId: 123
+  expectations:
+    rules:
+      emr_use_spot: FAIL
+      emr_target_spot_config_configured: SKIP
+
+- name: TestWithInstanceGroupAndSpot
+  input:
+    Resources:
+      MyInstanceGroup:
+        Type: AWS::EMR::InstanceGroupConfig
+        Properties:
+          BidPrice: 256
+          InstanceCount: 5
+          InstanceRole: TASK
+          InstanceType: 1
+          JobFlowId: 123
+  expectations:
+    rules:
+      emr_use_spot: PASS
+      emr_target_spot_config_configured: SKIP
+
+- name: TestWithInstanceFleetAndNoSpot
+  input:
+    Resources:
+      MyInstanceFleet:
+        Type: AWS::EMR::InstanceFleetConfig
+        Properties:
+          ClusterId: 1
+          InstanceFleetType: TASK
+          TargetSpotCapacity: 0
+  expectations:
+    rules:
+      emr_use_spot: SKIP
+      emr_target_spot_config_configured: FAIL
+
+- name: TestWithInstanceFleetAndSpot
+  input:
+    Resources:
+      MyInstanceFleet:
+        Type: AWS::EMR::InstanceFleetConfig
+        Properties:
+          ClusterId: 1
+          InstanceFleetType: TASK
+          TargetSpotCapacity: 5
+  expectations:
+    rules:
+      emr_use_spot: SKIP
+      emr_target_spot_config_configured: PASS

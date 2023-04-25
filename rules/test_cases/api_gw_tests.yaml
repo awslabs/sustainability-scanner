@@ -1,0 +1,33 @@
+- name: TestCorrectConfig
+  input:
+    Resources:
+      API-GW-1:
+        Type: 'AWS::ApiGateway::RestApi'
+        Properties:
+          MinimumCompressionSize: 1024
+  expectations:
+    rules:
+      rest_api_compression_exists: PASS
+      rest_api_compression_min: PASS
+      rest_api_compression_max: PASS
+
+- name: TestMissingCompression
+  input:
+    Resources:
+      API-GW-1:
+        Type: 'AWS::ApiGateway::RestApi'
+        Properties:
+  expectations:
+    rules:
+      verify_rest_api_compression_exists: FAIL
+
+- name: TestTooLargeConfig
+  input:
+    Resources:
+      API-GW-1:
+        Type: 'AWS::ApiGateway::RestApi'
+        Properties:
+          MinimumCompressionSize: 2049
+  expectations:
+    rules:
+      rest_api_compression_max: FAIL

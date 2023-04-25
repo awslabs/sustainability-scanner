@@ -1,0 +1,190 @@
+- name: TestToPortNoSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: SKIP
+      port_range_includes_ssh: SKIP
+
+- name: TestToPortNoSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: SKIP
+      port_range_includes_ssh: SKIP
+
+- name: TestToPortSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           ToPort: 22
+  expectations:
+    rules:
+      to_port_is_ssh: FAIL
+      from_port_is_ssh: SKIP
+      port_range_includes_ssh: SKIP
+
+- name: TestToPortSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - ToPort: 22
+  expectations:
+    rules:
+      to_port_is_ssh: FAIL
+      from_port_is_ssh: SKIP
+      port_range_includes_ssh: SKIP
+
+- name: TestFromPortNoSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           FromPort: 23
+  expectations:
+    rules:
+      to_port_is_ssh: SKIP
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: SKIP
+
+- name: TestFromPortNoSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - FromPort: 23
+  expectations:
+    rules:
+      to_port_is_ssh: SKIP
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: SKIP
+
+- name: TestFromPortSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           FromPort: 22
+  expectations:
+    rules:
+      to_port_is_ssh: SKIP
+      from_port_is_ssh: FAIL
+      port_range_includes_ssh: SKIP
+
+- name: TestFromPortSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - FromPort: 22
+  expectations:
+    rules:
+      to_port_is_ssh: SKIP
+      from_port_is_ssh: FAIL
+      port_range_includes_ssh: SKIP
+
+- name: TestRangeWithSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           FromPort: 20
+           ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: FAIL
+
+- name: TestRangeWithSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - FromPort: 20
+            ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: FAIL
+
+- name: TestRangeNoSSH
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroupIngress'
+        Properties:
+           FromPort: 23
+           ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: PASS
+
+- name: TestRangeNoSSH-SG
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - FromPort: 23
+            ToPort: 80
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: PASS
+
+- name: TestEC2InstanceWithUserData
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::Instance'
+        Properties:
+          UserData:
+            Fn::Base64: 
+              !Sub |
+                #!/bin/bash
+                yum update -y
+                yum install -y mysql-server
+  expectations:
+    rules:
+      user_data_to_AMI: FAIL
+
+- name: TestEC2InstanceWithoutUserData
+  input:
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::Instance'
+  expectations:
+    rules:
+      user_data_to_AMI: PASS

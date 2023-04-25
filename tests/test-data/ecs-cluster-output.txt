@@ -1,0 +1,114 @@
+{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "rest_api_compression_max",
+    "rest_api_compression_exists",
+    "rest_api_compression_min"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_default_compression_on",
+    "check_default_ttl",
+    "ensure_compression_on",
+    "check_max_ttl"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_loggroups_have_retention"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_codeguru_association"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "from_port_is_ssh",
+    "to_port_is_ssh",
+    "port_range_includes_ssh",
+    "user_data_to_AMI",
+    "graphics_acceleration_instead_of_gpu"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "emr_target_spot_config_configured",
+    "emr_use_spot"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_glue_job_allocatedcapacity",
+    "check_glue_job_workernodes",
+    "check_glue_job_maxcapacity",
+    "check_glue_job_timeout"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_graviton_instance_usage_in_rds",
+    "check_graviton_architecture_usage_in_lambda"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_rds_performanceinsights_enabled"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_buckets_have_lifecycle_configuration"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "iamuserpassword"
+  ],
+  "compliant": []
+}

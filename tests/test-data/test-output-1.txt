@@ -1,0 +1,302 @@
+{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "rest_api_compression_exists",
+    "rest_api_compression_max",
+    "rest_api_compression_min"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_compression_on",
+    "check_max_ttl",
+    "check_default_ttl",
+    "ensure_default_compression_on"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_loggroups_have_retention"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_codeguru_association"
+  ],
+  "compliant": []
+}test.yaml Status = FAIL
+FAILED rules
+ec2.guard/port_range_includes_ssh                 FAIL
+ec2.guard/user_data_to_AMI                        FAIL
+ec2.guard/graphics_acceleration_instead_of_gpu    FAIL
+---
+{
+  "name": "",
+  "metadata": {},
+  "status": "FAIL",
+  "not_compliant": [
+    {
+      "Rule": {
+        "name": "port_range_includes_ssh",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Disjunctions": {
+              "checks": [
+                {
+                  "Clause": {
+                    "Binary": {
+                      "context": " FromPort GREATER THAN  22",
+                      "messages": {
+                        "custom_message": "",
+                        "error_message": "Check was not compliant as property value [Path=/Resources/SSHSecurityGroup/Properties/SecurityGroupIngress/0/FromPort[L:31,C:20] Value=20] not greater than value [Path=[L:0,C:0] Value=22]."
+                      },
+                      "check": {
+                        "Resolved": {
+                          "from": {
+                            "path": "/Resources/SSHSecurityGroup/Properties/SecurityGroupIngress/0/FromPort",
+                            "value": 20
+                          },
+                          "to": {
+                            "path": "",
+                            "value": 22
+                          },
+                          "comparison": [
+                            "Gt",
+                            false
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "Clause": {
+                    "Binary": {
+                      "context": " ToPort LESS THAN  22",
+                      "messages": {
+                        "custom_message": "",
+                        "error_message": "Check was not compliant as property value [Path=/Resources/SSHSecurityGroup/Properties/SecurityGroupIngress/0/ToPort[L:33,C:18] Value=23] not less than value [Path=[L:0,C:0] Value=22]."
+                      },
+                      "check": {
+                        "Resolved": {
+                          "from": {
+                            "path": "/Resources/SSHSecurityGroup/Properties/SecurityGroupIngress/0/ToPort",
+                            "value": 23
+                          },
+                          "to": {
+                            "path": "",
+                            "value": 22
+                          },
+                          "comparison": [
+                            "Lt",
+                            false
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Rule": {
+        "name": "user_data_to_AMI",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Clause": {
+              "Unary": {
+                "context": " %ec2_instances[*].Properties.UserData not EXISTS  ",
+                "messages": {
+                  "custom_message": "",
+                  "error_message": "Check was not compliant as property [/Resources/Ec2Instance/Properties/UserData[L:83,C:17]] existed."
+                },
+                "check": {
+                  "Resolved": {
+                    "value": {
+                      "path": "/Resources/Ec2Instance/Properties/UserData",
+                      "value": {
+                        "Fn::Sub": "#!/bin/bash -xe\nyum install ec2-net-utils -y\nec2ifup eth1\nservice httpd start\n"
+                      }
+                    },
+                    "comparison": [
+                      "Exists",
+                      true
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Rule": {
+        "name": "graphics_acceleration_instead_of_gpu",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Clause": {
+              "Binary": {
+                "context": " InstanceType not IN  %list_of_gpu_instances",
+                "messages": {
+                  "custom_message": "",
+                  "error_message": "Check was not compliant as property [InstanceType] to compare from is missing. Value traversed to [Path=/Resources/Ec2Instance/Properties[L:69,C:13] Value={\"ImageId\":{\"Fn::FindInMap\":[\"RegionMap\",{\"Ref\":\"AWS::Region\"},\"AMI\"]},\"KeyName\":{\"Ref\":\"KeyName\"},\"NetworkInterfaces\":[{\"NetworkInterfaceId\":{\"Ref\":\"controlXface\"},\"DeviceIndex\":0},{\"NetworkInterfaceId\":{\"Ref\":\"webXface\"},\"DeviceIndex\":1}],\"Tags\":[{\"Key\":\"Role\",\"Value\":\"Test Instance\"}],\"UserData\":{\"Fn::Sub\":\"#!/bin/bash -xe\nyum install ec2-net-utils -y\nec2ifup eth1\nservice httpd start\n\"}}]."
+                },
+                "check": {
+                  "UnResolved": {
+                    "value": {
+                      "traversed_to": {
+                        "path": "/Resources/Ec2Instance/Properties",
+                        "value": {
+                          "ImageId": {
+                            "Fn::FindInMap": [
+                              "RegionMap",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              "AMI"
+                            ]
+                          },
+                          "KeyName": {
+                            "Ref": "KeyName"
+                          },
+                          "NetworkInterfaces": [
+                            {
+                              "NetworkInterfaceId": {
+                                "Ref": "controlXface"
+                              },
+                              "DeviceIndex": 0
+                            },
+                            {
+                              "NetworkInterfaceId": {
+                                "Ref": "webXface"
+                              },
+                              "DeviceIndex": 1
+                            }
+                          ],
+                          "Tags": [
+                            {
+                              "Key": "Role",
+                              "Value": "Test Instance"
+                            }
+                          ],
+                          "UserData": {
+                            "Fn::Sub": "#!/bin/bash -xe\nyum install ec2-net-utils -y\nec2ifup eth1\nservice httpd start\n"
+                          }
+                        }
+                      },
+                      "remaining_query": "InstanceType",
+                      "reason": "Could not find key InstanceType inside struct at path /Resources/Ec2Instance/Properties[L:69,C:13]"
+                    },
+                    "comparison": [
+                      "In",
+                      true
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "not_applicable": [],
+  "compliant": [
+    "from_port_is_ssh",
+    "to_port_is_ssh"
+  ]
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "emr_target_spot_config_configured",
+    "emr_use_spot"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_glue_job_workernodes",
+    "check_glue_job_allocatedcapacity",
+    "check_glue_job_maxcapacity",
+    "check_glue_job_timeout"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_graviton_architecture_usage_in_lambda",
+    "check_graviton_instance_usage_in_rds"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_rds_performanceinsights_enabled"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_buckets_have_lifecycle_configuration"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "iamuserpassword"
+  ],
+  "compliant": []
+}

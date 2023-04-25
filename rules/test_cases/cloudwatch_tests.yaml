@@ -1,0 +1,46 @@
+- name: TestEmptyResources
+  input:
+     Resources: {}
+  expectations:
+    rules:
+      ensure_all_loggroups_have_retention: SKIP
+
+- name: TestOneGroupWithRetention
+  input:
+    Resources:
+      LogGroup-1:
+        Type: 'AWS::Logs::LogGroup'
+        Properties:
+          RetentionInDays: 100
+  expectations:
+    rules:
+      ensure_all_loggroups_have_retention: PASS
+
+- name: TestTwoGroupsWithRetention
+  input:
+    Resources:
+      LogGroup-1:
+        Type: 'AWS::Logs::LogGroup'
+        Properties:
+          RetentionInDays: 100
+      LogGroup-2:
+        Type: 'AWS::Logs::LogGroup'
+        Properties:
+          RetentionInDays: 200
+  expectations:
+    rules:
+      ensure_all_loggroups_have_retention: PASS      
+
+- name: TestTwoGroupsWithoutRetention
+  input:
+    Resources:
+      LogGroup-1:
+        Type: 'AWS::Logs::LogGroup'
+        Properties:
+          RetentionInDays: 100
+      LogGroup-2:
+        Type: 'AWS::Logs::LogGroup'
+        Properties:
+  expectations:
+    rules:
+      ensure_all_loggroups_have_retention: FAIL            

@@ -1,0 +1,15 @@
+#
+# Amazon CodeGuru Check
+# This rule checks if a AWS CodeCommit repository has Amazon CodeGuru Reviewer enabled. 
+# Amazon CodeGuru can suggest improvements on code-level sustainability.
+# You will be charged for reviewing code using Amazon CodeGuru.
+# See pricing details at https://aws.amazon.com/codeguru/pricing/
+
+let codecommit_repo = Resources.*[Type == 'AWS::CodeCommit::Repository']
+let codeguru_reviewer = Resources.*[Type == 'AWS::CodeGuruReviewer::RepositoryAssociation']
+
+rule check_codeguru_association when %codecommit_repo !empty {
+    %codeguru_reviewer !empty {
+        %codeguru_reviewer.Properties.Name == %codecommit_repo.Properties.RepositoryName
+    }
+}

@@ -1,0 +1,12 @@
+#
+# Amazon S3 checks
+# This rules checks that your Amazon S3 buckets have a lifecycle configuration attached to them
+# to either delete data or move it to other tiers
+
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+
+rule ensure_all_buckets_have_lifecycle_configuration when %s3_buckets !empty {
+    let itConfigurations = %s3_buckets.Properties.LifecycleConfiguration
+    %itConfigurations exists
+}

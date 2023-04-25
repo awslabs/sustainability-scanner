@@ -1,0 +1,31 @@
+#
+# Amazon API Gateway checks
+# These rules checks Rest API compression configuration.
+# It checks that compression threshold is between 1 and 2 MB. 
+# Setting too low compression threshold potentially can increase final data size and will consume
+# too much of CPU. Too high a threshold will consume extra network bandwidth where data could 
+# have been compressed efficiently. 
+
+let api_gw_rest = Resources.*[ Type == 'AWS::ApiGateway::RestApi' ]
+
+rule rest_api_compression_exists when %api_gw_rest !empty {
+    %api_gw_rest.Properties {
+        MinimumCompressionSize exists
+    }
+}
+
+rule rest_api_compression_min when %api_gw_rest !empty {
+    %api_gw_rest.Properties {
+        when MinimumCompressionSize exists {
+            MinimumCompressionSize >= 1024
+        }
+    }
+}
+
+rule rest_api_compression_max when %api_gw_rest !empty {
+    %api_gw_rest.Properties {
+        when MinimumCompressionSize exists {
+            MinimumCompressionSize <= 2048
+        }
+    }
+}

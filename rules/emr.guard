@@ -1,0 +1,18 @@
+#
+# Amazon EMR Checks
+# This rule focuses on using spot instances for task nodes
+
+let emr_instancegroup_config = Resources.*[Type == 'AWS::EMR::InstanceGroupConfig']
+let emr_instancefleet_config = Resources.*[Type == 'AWS::EMR::InstanceFleetConfig']
+
+rule emr_use_spot when %emr_instancegroup_config !empty {
+     %emr_instancegroup_config.Properties.BidPrice exists
+}
+
+rule emr_target_spot_config_configured when %emr_instancefleet_config !empty {
+    %emr_instancefleet_config.Properties {
+        when TargetSpotCapacity exists {
+            TargetSpotCapacity > 0
+        }
+    }
+}

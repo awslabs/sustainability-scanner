@@ -1,0 +1,29 @@
+#
+# AWS Glue Checks
+# These rules focus on optimizing AWS Glue jobs by limiting timeouts and allocated 
+# and max capacity in case the jobs don't require the service defaults
+
+let glue_job = Resources.*[Type == 'AWS::Glue::Job']
+
+rule check_glue_job_timeout when %glue_job !empty {
+     %glue_job.Properties.Timeout exists
+    }
+
+rule check_glue_job_workernodes when %glue_job !empty {
+    %glue_job.Properties
+     {
+        when WorkerType exists
+        {
+           NumberOfWorkers exists
+        }
+    }
+}
+
+rule check_glue_job_allocatedcapacity when %glue_job !empty {
+  %glue_job.Properties.AllocatedCapacity exists
+}
+
+rule check_glue_job_maxcapacity when %glue_job !empty {
+  %glue_job.Properties.MaxCapacity exists
+}
+

@@ -1,0 +1,271 @@
+{
+    "all_rules": {
+        "api_gw": {
+            "enabled": true,
+            "rules": [
+            {
+                "rule_name": "rest_api_compression_exists",
+                "severity": "MEDIUM",
+                "message": "Consider configuring the payload compression with MinimumCompressionSize. Compressing the payload will in general reduce the network traffic. However, compressing data of a small size might actually increase final data size.",
+                "enabled": true,
+                "links": [
+                    "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-gzip-compression-decompression.html",
+                    "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a8.html"
+                ]
+            },
+            {
+                "rule_name": "rest_api_compression_min",
+                "severity": "MEDIUM",
+                "message": "Consider configuring the payload compression with MinimumCompressionSize. Compressing the payload will in general reduce the network traffic. However, compressing data of a small size might actually increase final data size.",
+                "enabled": true,
+                "links": [
+                    "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-gzip-compression-decompression.html",
+                    "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a8.html"
+                ]
+            },
+            {
+                "rule_name": "rest_api_compression_max",
+                "severity": "MEDIUM",
+                "message": "Consider configuring the payload compression with MinimumCompressionSize. Compressing the payload will in general reduce the network traffic.",
+                "enabled": true,
+                "links": [
+                    "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-gzip-compression-decompression.html",
+                    "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a8.html"
+                ]
+            }
+            ]
+        },
+        "cloud_front": {
+            "enabled": true,
+            "rules" : [
+                {
+                    "rule_name": "ensure_default_compression_on",
+                    "severity": "MEDIUM",
+                    "message": "Amazon CloudFront can automatically compress certain type of files when serving them to clients. When requested objects are compressed, downloads can be faster and less network bandwidth is consumed. It is better to have compression of for default configuration.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html",
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a8.html"
+                    ]
+                },
+                {
+                    "rule_name": "ensure_compression_on",
+                    "severity": "MEDIUM",
+                    "message": "Amazon CloudFront can automatically compress certain type of files when serving them to clients. When requested objects are compressed, downloads can be faster and less network bandwidth is consumed.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html",
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a8.html"
+                    ]
+                },
+                {
+                    "rule_name": "check_default_ttl",
+                    "severity": "MEDIUM",
+                    "message": "For Amazon Cloudfront caching, it is recommended to keep DefaultTTL above 24h, if possible. To avoid too frequent data calls to origin.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html",
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_user_a5.html"
+                    ]
+                },
+                {
+                    "rule_name": "check_max_ttl",
+                    "severity": "MEDIUM",
+                    "message": "For Amazon Cloudfront caching, it is recommended to keep MaxTTL above 24h, if possible. To avoid too frequent data calls to origin.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html",
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_user_a5.html"
+                    ]
+                }    
+            ]
+        },
+        "cloudwatch": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "ensure_all_loggroups_have_retention",
+                    "severity": "HIGH",
+                    "message": "Amazon CloudWatch by default keeps log indefinitely. Consider defining the retention time explicitly.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html#SettingLogRetention",
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a6.html"
+                    ]
+                }
+           ]
+        },
+        "codeguru": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "check_codeguru_association",
+                    "severity": "LOW",
+                    "message": "With Amazon CodeGuru you can find areas of code that consume most time or resources. You will be charged for reviewing code using Amazon CodeGuru.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_software_a4.html",
+                        "https://aws.amazon.com/codeguru/pricing"
+                    ]
+                }
+           ]
+        },
+        "ec2": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "from_port_is_ssh",
+                    "severity": "MEDIUM",
+                    "message": "Consider using AWS Systems Manager to access your Amazon EC2 instances instead of direct access or bastion host.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_dev_a4.html"
+                    ]
+                },
+                {
+                    "rule_name": "to_port_is_ssh",
+                    "severity": "MEDIUM",
+                    "message": "Consider using AWS Systems Manager to access your Amazon EC2 instances instead of direct access or bastion host.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_dev_a4.html"
+                    ]
+                },
+                {
+                    "rule_name": "port_range_includes_ssh",
+                    "severity": "MEDIUM",
+                    "message": "Consider using AWS Systems Manager to access your Amazon EC2 instances instead of direct access or bastion host.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_dev_a4.html"
+                    ]
+                }
+           ]
+        },
+        "emr": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "emr_use_spot",
+                    "severity": "MEDIUM",
+                    "message": "Use spot instances, if possible to maximize the utilization of compute resources and reduce the impact of unused resources.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a3.html"
+                    ]
+                },
+                {
+                    "rule_name": "emr_target_spot_config_configured",
+                    "severity": "MEDIUM",
+                    "message": "Use spot instances, if possible to maximize the utilization of compute resources and reduce the impact of unused resources.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a3.html"
+                    ]
+                }
+           ]
+        },
+        "glue": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "check_glue_job_timeout",
+                    "severity": "MEDIUM",
+                    "message": "AWS Glue jobs' default timeout is 48 hrs, for shorter jobs, reduce the default timeout",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_software_a4.html",
+                        "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html"
+                    ]
+                },
+                {
+                    "rule_name": "check_glue_job_workernodes",
+                    "severity": "MEDIUM",
+                    "message": "By default number of workers is 10. You can reduce it, if your job does not need that many workers to reduce impact.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a2.html",
+                        "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html"
+                    ]
+                },
+                {
+                    "rule_name": "check_glue_job_allocatedcapacity",
+                    "severity": "MEDIUM",
+                    "message": "Consider limiting allocated capacity to use workers proportional to job demand to reduce impact. This field is now deprecated. For Glue version 1.0 jobs, Use MaxCapacity instead.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a2.html",
+                        "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html"
+                    ]
+                },
+                {
+                    "rule_name": "check_glue_job_maxcapacity",
+                    "severity": "MEDIUM",
+                    "message": "For Glue version 1.0 jobs you can limit max capacity to reduce impact. For Glue version 2.0 jobs, you cannot specify a Maximum capacity. Instead, you should specify a Worker type and the Number of workers.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a2.html",
+                        "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-jobs-job.html"
+                    ]
+                }
+           ]
+        },
+        "graviton": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "check_graviton_instance_usage_in_rds",
+                    "severity": "MEDIUM",
+                    "message": "Consider selecting the AWS Graviton based instances in your usage of AWS managed services (e.g. Amazon Relational Database Service) to take advantage of energy efficiency improvements.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a3.html",
+                        "https://aws.amazon.com/blogs/database/key-considerations-in-moving-to-graviton2-for-amazon-rds-and-amazon-aurora-databases/",
+                        "https://aws.amazon.com/blogs/aws/new-amazon-rds-on-graviton2-processors/"
+                    ]
+                },
+                {
+                    "rule_name": "check_graviton_architecture_usage_in_lambda",
+                    "severity": "MEDIUM",
+                    "message": "Use AWS Graviton for Lambda functions, if possible, to take advantage of energy efficiency improvements.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_hardware_a3.html",
+                        "https://aws.amazon.com/blogs/aws/aws-lambda-functions-powered-by-aws-graviton2-processor-run-your-functions-on-arm-and-get-up-to-34-better-price-performance/"
+                    ]
+                }
+           ]
+        },
+        "rds": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "check_rds_performanceinsights_enabled",
+                    "severity": "MEDIUM",
+                    "message": "Amazon RDS Performance insights helps you quickly assess the load on your database, and determine when and where to take action. You will be charged for analyzing longer-term (more than 7 days) performance trends.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_software_a6.html",
+                        "https://aws.amazon.com/rds/performance-insights/",
+                        "https://aws.amazon.com/rds/performance-insights/pricing/"
+                    ]
+                }
+           ]
+        },
+        "s3": {
+            "enabled": true,
+            "rules": [
+                {
+                    "rule_name": "ensure_all_buckets_have_lifecycle_configuration",
+                    "severity": "MEDIUM",
+                    "message": "Amazon S3 Lifecycle policies will either delete data or move data between different storage classes based on data access patterns.",
+                    "enabled": true,
+                    "links": [
+                        "https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_data_a4.html",
+                        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html"
+                    ]
+                }
+           ]
+        }
+    }
+}
