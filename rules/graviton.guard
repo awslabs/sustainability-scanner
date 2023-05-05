@@ -4,7 +4,7 @@
 # that are more power-efficient.
 
 let rds_db = Resources.*[Type == 'AWS::RDS::DBInstance']
- let valid_instance_classes = ['db.m6g', 'db.m6gd', 'db.x2g', 'db.r6g', 'db.r6gd', 'db.t4g']
+ let valid_instance_classes = ['db.m6g', 'db.m6gd', 'db.m7g', 'db.x2g', 'db.r6g', 'db.r7g', 'db.r6gd', 'db.t4g']
 
 
 rule check_graviton_instance_usage_in_rds when %rds_db !empty {
