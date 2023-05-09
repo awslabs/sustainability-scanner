@@ -3,7 +3,7 @@
   input: {}
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: SKIP
 
 - name: TestEmptyResources
@@ -11,7 +11,7 @@
      Resources: {}
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: SKIP
 
 - name: TestRDSWithGraviton
@@ -30,7 +30,7 @@
           DBParameterGroupName: 'MyRDSParamGroup'
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: PASS
+      check_graviton_instance_usage_in_rds: PASS
       check_graviton_architecture_usage_in_lambda: SKIP
 
 - name: TestRDSWithoutGraviton
@@ -49,7 +49,7 @@
           DBParameterGroupName: 'MyRDSParamGroup'
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: FAIL
+      check_graviton_instance_usage_in_rds: FAIL
       check_graviton_architecture_usage_in_lambda: SKIP
 
 - name: TestLambdaWithZipAndWithoutGraviton
@@ -73,7 +73,7 @@
           PackageType: 'Zip'
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: FAIL
 
 - name: TestLambdaWithZipAndWithGraviton
@@ -97,7 +97,7 @@
           PackageType: 'Zip' 
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: PASS
 
 - name: TestLambdaWithImageAndWithGraviton
@@ -121,7 +121,7 @@
           PackageType: 'Image' 
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: PASS
 
 - name: TestLambdaWithImageAndWithoutGraviton
@@ -145,7 +145,7 @@
           PackageType: 'Image'
   expectations:
     rules:
-      check_graviton_instace_usage_in_rds: SKIP
+      check_graviton_instance_usage_in_rds: SKIP
       check_graviton_architecture_usage_in_lambda: FAIL
 
       
