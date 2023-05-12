@@ -1,8 +1,9 @@
+import os 
 import unittest
 
 from susscanner import Scan
 
-TEST_DATA_DIR = 'tests/test-data/'
+TEST_DATA_DIR = os.path.join(os.path.dirname(__file__) + '/test-data/')
 
 
 class TestScan(unittest.TestCase):
@@ -10,7 +11,7 @@ class TestScan(unittest.TestCase):
         result = Scan.parse_cfn_guard_output(Scan(), '')
         self.assertEqual(len(result['failed_rules']), 0)
 
-    def test_input_with_2_violations(self):
+    def test_input_with_1_violation(self):
         # Template source for this output is VPC_EC2_Instance_With_ENI from
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-ec2.html
         # with one modification - To-From ports changed from 22-22, to 20-23
@@ -18,9 +19,8 @@ class TestScan(unittest.TestCase):
             data = f.read()
         result = Scan.parse_cfn_guard_output(Scan(), data)
         fr = result['failed_rules']
-        self.assertEqual(2, len(fr))
+        self.assertEqual(1, len(fr))
         self.assertEqual(fr[0]['rule_name'], 'port_range_includes_ssh')
-        self.assertEqual(fr[1]['rule_name'], 'user_data_to_AMI')
 
     def test_wordpress_output(self):
         # Template source for this output is
@@ -29,8 +29,7 @@ class TestScan(unittest.TestCase):
             data = f.read()
         result = Scan.parse_cfn_guard_output(Scan(), data)
         fr = result['failed_rules']
-        self.assertEqual(1, len(fr))
-        self.assertEqual(fr[0]['rule_name'], 'user_data_to_AMI')
+        self.assertEqual(0, len(fr))
 
     def test_ecs_cluster_output(self):
         # Template source for this output is

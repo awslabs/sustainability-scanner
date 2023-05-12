@@ -1,10 +1,13 @@
+import os
+
 from pathlib import Path
 from susscanner.scan import Scan
 from susscanner.config import init_app
 from susscanner.cli import main
 
+
 __app_name__ = "susscanner"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 (
     SUCCESS,
@@ -28,6 +31,7 @@ ERRORS = {
     ID_ERROR: "id error",
 }
 
-DIR_PATH = Path().absolute()
+DIR_PATH = absolute_path = os.path.dirname(__file__)
 CONFIG_FILE_NAME = "rules_metadata.json"
-CONFIG_FILE_PATH = DIR_PATH / CONFIG_FILE_NAME
+CONFIG_FILE_PATH = Path(os.path.join(DIR_PATH, CONFIG_FILE_NAME))
+

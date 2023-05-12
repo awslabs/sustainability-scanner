@@ -3,7 +3,7 @@
 **Validate AWS CloudFormation templates against AWS Well-Architected Sustainability Pillar best practices.**
 
 Sustainability scanner is an open source tool that helps you create a more sustainable infrastructure on AWS. It takes in your Cloudformation template as input, evaluates it against a set of sustainability best practices and generates a report with a sustainability score and suggested improvements to apply to your template.
-SusScanner comes with a set of rule implementations aligned to the [AWS Well-Architected Pillar for Sustainability](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sustainability-pillar.html). However, this is not an exhaustive list and new rules will come out as the tool evolves. Furthermore, you can extend these rules (located in the rules dir) in accordance with your company-specific sustainability policies.
+SusScanner comes with a set of rule implementations aligned to the [AWS Well-Architected Pillar for Sustainability](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sustainability-pillar.html). However, this is not an exhaustive list and new rules will come out as the tool evolves. Furthermore, you can extend these rules (located in the `susscanner/rules` dir) in accordance with your company-specific sustainability policies.
 
 **Sustainability Scanner in action**  
 ![demo of susscanner][demo]
@@ -47,7 +47,7 @@ There are two options to install the tool:
 To install the project via pip, you simply have to call
 
 ```sh
-$ pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.0
+$ pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.1
 ```
 
 #### Scanning an AWS CloudFormation Template
@@ -79,7 +79,7 @@ You should see an output like below;
 $ susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -152,12 +152,12 @@ Find the scoring by severity in the table below
 
 ## Rule set
 
-SusScanner comes with a set of best practices/rules that align with [best practices for sustainability in the cloud](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/best-practices-for-sustainability-in-the-cloud.html). You can find the list of best practices, the service they apply to and their improvement actions in the [rules_metadata.json](https://github.com/awslabs/sustainability-scanner/blob/main/rules_metadata.json) file.
+SusScanner comes with a set of best practices/rules that align with [best practices for sustainability in the cloud](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/best-practices-for-sustainability-in-the-cloud.html). You can find the list of best practices, the service they apply to and their improvement actions in the [rules_metadata.json](https://github.com/awslabs/sustainability-scanner/blob/main/susscanner/rules_metadata.json) file.
 
 ### Disabling rules
 
 As mentioned before, the tool comes with a pre-defined set of rules, all of which are enabled by default. However, you can disable a rule if it is not applicable to your setup.
-In the root of the tool you can find a file called `rules_metadata.json`. This configuration file can be used to specify which rules to include. The structure of this file is as follows:
+In the susscanner directory you can find a file called `rules_metadata.json`. This configuration file can be used to specify which rules to include. The structure of this file is as follows:
 
 ```
 01:{
@@ -185,16 +185,16 @@ Rules can be enabled or disabled on both a service level and rule level. If you 
 
 ### Extending the rule set
 
-If you wish to extend the pre-existing set of rules you can define your own by adding AWS CloudFormation Guard rules to the `rules` directory. For each rule that you add, don't forget to add test cases to validate it. You can [validate](https://docs.aws.amazon.com/cfn-guard/latest/ug/validating-rules.html) a rule by running:
+If you wish to extend the pre-existing set of rules you can define your own by adding AWS CloudFormation Guard rules to the `susscanner/rules` directory. For each rule that you add, don't forget to add test cases to validate it. You can [validate](https://docs.aws.amazon.com/cfn-guard/latest/ug/validating-rules.html) a rule by running:
 
 ```sh
-$ cfn-guard test --rules-file ./rules/<RULE_FILE> --test-data ./rules/test_cases/<TEST_FILE>
+$ cfn-guard test --rules-file ./susscanner/rules/<RULE_FILE> --test-data ./susscanner/rules/test_cases/<TEST_FILE>
 ```
 
 AWS CloudFormation Guard uses a domain-specific language (DSL) to define the rules. More information can be found at the [AWS CloudFormation Guard documentation page](https://docs.aws.amazon.com/cfn-guard/latest/ug/writing-rules.html). When defining a new rule there are 2 requirements to ensure compatibility with the Sustainability Scanner project.
 
 1. Rules `FAIL` when the resulting state is not desirable in terms of sustainability and `PASS` when the outcome is sustainable.
-2. Add the rule created in the `rules` directory to the `rules_metadata.json` file. Define the name of the rule in the `rule_name` variable.
+2. Add the rule created in the `susscanner/rules` directory to the `rules_metadata.json` file. Define the name of the rule in the `rule_name` variable.
 
 ## FAQs
 
@@ -209,7 +209,7 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 ```
 {
     "title": "Sustainability Scanner Report",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "sustainability_score": 0,
     "failed_rules": []
 }
