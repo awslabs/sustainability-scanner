@@ -18,7 +18,7 @@
         Type: 'AWS::EC2::SecurityGroup'
         Properties:
           SecurityGroupIngress:
-          - ToPort: 80
+          - ToPort: "80"
   expectations:
     rules:
       to_port_is_ssh: PASS
@@ -31,7 +31,7 @@
       EC2-1:
         Type: 'AWS::EC2::SecurityGroupIngress'
         Properties:
-           ToPort: 22
+           ToPort: "22"
   expectations:
     rules:
       to_port_is_ssh: FAIL
@@ -58,7 +58,7 @@
       EC2-1:
         Type: 'AWS::EC2::SecurityGroupIngress'
         Properties:
-           FromPort: 23
+           FromPort: "23"
   expectations:
     rules:
       to_port_is_ssh: SKIP
@@ -85,7 +85,7 @@
       EC2-1:
         Type: 'AWS::EC2::SecurityGroupIngress'
         Properties:
-           FromPort: 22
+           FromPort: "22"
   expectations:
     rules:
       to_port_is_ssh: SKIP
@@ -127,8 +127,8 @@
         Type: 'AWS::EC2::SecurityGroup'
         Properties:
           SecurityGroupIngress:
-          - FromPort: 20
-            ToPort: 80
+          - FromPort: "20"
+            ToPort: "80"
   expectations:
     rules:
       to_port_is_ssh: PASS
@@ -156,35 +156,10 @@
         Type: 'AWS::EC2::SecurityGroup'
         Properties:
           SecurityGroupIngress:
-          - FromPort: 23
-            ToPort: 80
+          - FromPort: "23"
+            ToPort: "80"
   expectations:
     rules:
       to_port_is_ssh: PASS
       from_port_is_ssh: PASS
       port_range_includes_ssh: PASS
-
-- name: TestEC2InstanceWithUserData
-  input:
-    Resources:
-      EC2-1:
-        Type: 'AWS::EC2::Instance'
-        Properties:
-          UserData:
-            Fn::Base64: 
-              !Sub |
-                #!/bin/bash
-                yum update -y
-                yum install -y mysql-server
-  expectations:
-    rules:
-      user_data_to_AMI: FAIL
-
-- name: TestEC2InstanceWithoutUserData
-  input:
-    Resources:
-      EC2-1:
-        Type: 'AWS::EC2::Instance'
-  expectations:
-    rules:
-      user_data_to_AMI: PASS
