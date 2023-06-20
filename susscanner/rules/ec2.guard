@@ -5,7 +5,9 @@
 
 let sec_groups_ingress = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress' ]
 
-let sec_groups = Resources.*[ Type == 'AWS::EC2::SecurityGroup' ]
+let sec_groups = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+                              Properties.SecurityGroupIngress exists
+]
 
 let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance']
 
@@ -15,13 +17,23 @@ let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance']
 rule from_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
     %sec_groups_ingress.Properties {
         when FromPort exists {
-            FromPort != 22
+            when FromPort is_string {
+                FromPort != "22"
+            }
+            when FromPort !is_string {
+                FromPort != 22
+            }
         }
     }
     %sec_groups.Properties {
         SecurityGroupIngress[*] {
             when FromPort exists {
-                FromPort != 22
+                when FromPort is_string {
+                    FromPort != "22"
+                }
+                when FromPort !is_string {
+                    FromPort != 22
+                }
             }
         }
     }
@@ -30,13 +42,23 @@ rule from_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
 rule to_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
     %sec_groups_ingress.Properties {
         when ToPort exists {
-            ToPort != 22
+            when ToPort is_string {
+                ToPort != "22"
+            }
+            when ToPort !is_string {
+                ToPort != 22
+            }
         }
     }
     %sec_groups.Properties {
         SecurityGroupIngress[*] {
             when ToPort exists {
-                ToPort != 22
+                when ToPort is_string {
+                    ToPort != "22"
+                }
+                when ToPort !is_string {
+                    ToPort != 22
+                }
             }
         }
     }
@@ -45,9 +67,17 @@ rule to_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
 rule port_range_includes_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
     %sec_groups_ingress.Properties {
         when FromPort exists {
-            when ToPort exists FromPort != 22 ToPort != 22 {
-                FromPort > 22 or 
-                ToPort < 22
+            when ToPort exists ToPort !is_string FromPort !is_string {
+                when FromPort != 22 ToPort != 22 {
+                    FromPort > 22 or
+                    ToPort < 22
+                }
+            }
+            when ToPort exists ToPort is_string FromPort is_string {
+                when FromPort != "22" ToPort != "22" {
+                    FromPort > "22" or
+                    ToPort < "22"
+                }
             }
         }
     }
@@ -55,9 +85,17 @@ rule port_range_includes_ssh when %sec_groups_ingress !empty OR %sec_groups !emp
     %sec_groups.Properties {
         SecurityGroupIngress[*] {
             when FromPort exists {
-                when ToPort exists FromPort != 22 ToPort != 22 {
-                    FromPort > 22 or
-                    ToPort < 22
+                when ToPort exists ToPort !is_string FromPort !is_string {
+                    when FromPort != 22 ToPort != 22 {
+                        FromPort > 22 or
+                        ToPort < 22
+                    }
+                }
+                when ToPort exists ToPort is_string FromPort is_string {
+                    when FromPort != "22" ToPort != "22" {
+                        FromPort > "22" or
+                        ToPort < "22"
+                    }
                 }
             }
         }
