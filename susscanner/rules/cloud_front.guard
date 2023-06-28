@@ -19,9 +19,11 @@ rule ensure_default_compression_on when %cf !empty {
 rule ensure_compression_on when %cf !empty {
     %cf {
         Properties.DistributionConfig {
-            CacheBehaviors[*] {
-                Compress exists
-                Compress == true
+            when CacheBehaviors exists {
+                CacheBehaviors[*] {
+                    Compress exists
+                    Compress == true
+                }
             }
         }
     }

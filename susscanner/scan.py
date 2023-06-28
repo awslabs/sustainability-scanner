@@ -120,23 +120,24 @@ class Scan:
                 for sub_parse in self.parse_checks(check["Disjunctions"]["checks"]):
                     yield sub_parse
             else:
-                clause = check["Clause"]
-                resource = {}
-                rule_type = ""
-                if "Unary" in clause:
-                    rule_type = "Unary"
-                elif "Binary" in clause:
-                    rule_type = "Binary"
-                error_msg = clause[rule_type]["messages"]["error_message"]
-                typed_check = clause[rule_type]["check"]
-                resource["name"] = Scan.get_path(typed_check)
+                if "Clause" in check:
+                    clause = check["Clause"]
+                    resource = {}
+                    rule_type = ""
+                    if "Unary" in clause:
+                        rule_type = "Unary"
+                    elif "Binary" in clause:
+                        rule_type = "Binary"
+                    error_msg = clause[rule_type]["messages"]["error_message"]
+                    typed_check = clause[rule_type]["check"]
+                    resource["name"] = Scan.get_path(typed_check)
 
-                # error message contains line number in the format like this:
-                # "Value traversed to [Path=/Resources/API-GW-1/Properties[L:12,C:3]"
-                # so the regex below just finds it.
-                line = re.findall(r"\[L\:([0-9]*),C\:[0-9]*\]", error_msg)
-                resource["line"] = line[0]
-                yield resource
+                    # error message contains line number in the format like this:
+                    # "Value traversed to [Path=/Resources/API-GW-1/Properties[L:12,C:3]"
+                    # so the regex below just finds it.
+                    line = re.findall(r"\[L\:([0-9]*),C\:[0-9]*\]", error_msg)
+                    resource["line"] = line[0]
+                    yield resource
 
     @staticmethod
     def get_object_to_parse(jsons):
