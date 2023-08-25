@@ -1,5 +1,7 @@
 # Sustainability Scanner (SusScanner)
 
+<a href="https://github.com/marketplace/actions/aws-sustainability-scanner-github-action"><img src="https://badgen.net/badge/github/Github%20Action/3C1?icon&label" /></a>
+
 **Validate AWS CloudFormation templates against AWS Well-Architected Sustainability Pillar best practices.**
 
 Sustainability scanner is an open source tool that helps you create a more sustainable infrastructure on AWS. It takes in your Cloudformation template as input, evaluates it against a set of sustainability best practices and generates a report with a sustainability score and suggested improvements to apply to your template.
@@ -214,6 +216,10 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
     "failed_rules": []
 }
 ```
+
+### Can I use it as part of a Github workflow?
+
+Yes, a Github Action to run the scanner is available on the [marketplace](https://github.com/marketplace/actions/aws-sustainability-scanner-github-action).
 
 ## Security
 
