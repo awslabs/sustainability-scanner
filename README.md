@@ -1,6 +1,6 @@
 # Sustainability Scanner (SusScanner)
 
-<a href="https://github.com/marketplace/actions/aws-sustainability-scanner-github-action"><img src="https://badgen.net/badge/github/Github%20Action/3C1?icon&label" /></a>
+<a href="https://github.com/marketplace/actions/aws-sustainability-scanner-github-action"><img src="https://img.shields.io/badge/GitHub%20Action-green?style=social&logo=github" /></a>
 
 **Validate AWS CloudFormation templates against AWS Well-Architected Sustainability Pillar best practices.**
 
