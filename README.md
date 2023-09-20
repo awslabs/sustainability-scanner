@@ -49,7 +49,7 @@ There are two options to install the tool:
 To install the project via pip, you simply have to call
 
 ```sh
-$ pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.1
+pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.1
 ```
 
 #### Scanning an AWS CloudFormation Template
@@ -58,7 +58,7 @@ Run `susscanner --help` to get a list of options and arguments for the tool.
 You should see an output like below:
 
 ```sh
-$ susscanner --help
+susscanner --help
 Usage: susscanner [OPTIONS] [CloudFormation Template]
 
 Arguments:
@@ -72,13 +72,13 @@ Options:
 You can scan a template by using the command:
 
 ```sh
-$ susscanner [path/to/cloudformation/template]
+susscanner [path/to/cloudformation/template]
 ```
 
 You should see an output like below;
 
 ```sh
-$ susscanner test.yaml
+susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
     "version": "1.0.1",
@@ -107,27 +107,27 @@ $ susscanner test.yaml
 #### Clone this project
 
 ```sh
-$ git clone https://github.com/awslabs/sustainability-scanner.git
+git clone https://github.com/awslabs/sustainability-scanner.git
 ```
 
 #### Move into the project directory
 
 ```sh
-$ cd susscanner
+cd susscanner
 ```
 
 #### Create and activate virtual environment (optional)
 
 ```sh
 # from the root directory of the project
-$ python3 -m venv .venv
-$ source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 #### Install dependencies
 
 ```sh
-$ python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 That's it! You're ready to use Sustainability Scanner.
@@ -138,7 +138,7 @@ You can scan a template by using the command;
 
 ```sh
 #from the root directory of the project
-$ python3 -m susscanner [path/to/cloudformation/template]
+python3 -m susscanner [path/to/cloudformation/template]
 ```
 
 ## Sustainability Score
@@ -190,7 +190,7 @@ Rules can be enabled or disabled on both a service level and rule level. If you 
 If you wish to extend the pre-existing set of rules you can define your own by adding AWS CloudFormation Guard rules to the `susscanner/rules` directory. For each rule that you add, don't forget to add test cases to validate it. You can [validate](https://docs.aws.amazon.com/cfn-guard/latest/ug/validating-rules.html) a rule by running:
 
 ```sh
-$ cfn-guard test --rules-file ./susscanner/rules/<RULE_FILE> --test-data ./susscanner/rules/test_cases/<TEST_FILE>
+cfn-guard test --rules-file ./susscanner/rules/<RULE_FILE> --test-data ./susscanner/rules/test_cases/<TEST_FILE>
 ```
 
 AWS CloudFormation Guard uses a domain-specific language (DSL) to define the rules. More information can be found at the [AWS CloudFormation Guard documentation page](https://docs.aws.amazon.com/cfn-guard/latest/ug/writing-rules.html). When defining a new rule there are 2 requirements to ensure compatibility with the Sustainability Scanner project.
