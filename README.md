@@ -49,7 +49,7 @@ There are two options to install the tool:
 To install the project via pip, you simply have to call
 
 ```sh
-$ pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.1
+$ pip3 install sustainability-scanner
 ```
 
 #### Scanning an AWS CloudFormation Template
