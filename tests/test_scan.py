@@ -51,6 +51,18 @@ class TestScan(unittest.TestCase):
         self.assertEqual(fr[0]['rule_name'], 'check_graviton_instance_usage_in_rds')
         self.assertEqual(fr[1]['rule_name'], 'check_rds_performanceinsights_enabled')
 
+    def test_rds_output(self):
+        # Template source for this output is
+        # https://github.com/awslabs/aws-cloudformation-templates/blob/master/aws/services/RDS/RDS_with_DBParameterGroup.yaml
+        # with one modification - Added `EnablePerformanceInsights: 'true'`
+        with open(TEST_DATA_DIR + "rds-output.txt") as f:
+            data = f.read()
+        result = Scan.parse_cfn_guard_output(Scan(), data)
+        fr = result["failed_rules"]
+        self.assertEqual(1, len(fr))
+        self.assertEqual(fr[0]["rule_name"], "check_graviton_instance_usage_in_rds")
+
+
 
 if __name__ == '__main__':
     unittest.main()
