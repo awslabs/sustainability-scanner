@@ -63,6 +63,5 @@ class TestScan(unittest.TestCase):
         self.assertEqual(fr[0]["rule_name"], "check_graviton_instance_usage_in_rds")
 
 
-
 if __name__ == '__main__':
     unittest.main()
