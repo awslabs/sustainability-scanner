@@ -10,7 +10,7 @@ SusScanner comes with a set of rule implementations aligned to the [AWS Well-Arc
 **Sustainability Scanner in action**  
 ![demo of susscanner][demo]
 
-[demo]: demo.gif
+[demo]: https://raw.githubusercontent.com/awslabs/sustainability-scanner/main/demo.gif
 
 Scroll down to the getting started section to get detailed examples on how to use the tool.
 

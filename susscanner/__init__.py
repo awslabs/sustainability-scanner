@@ -7,7 +7,7 @@ from susscanner.cli import main
 
 
 __app_name__ = "susscanner"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 (
     SUCCESS,
