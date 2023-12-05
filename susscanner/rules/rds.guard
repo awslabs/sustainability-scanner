@@ -10,6 +10,6 @@ let rds_db = Resources.*[Type == 'AWS::RDS::DBInstance']
 rule check_rds_performanceinsights_enabled when %rds_db !empty {
     %rds_db.Properties.EnablePerformanceInsights exists
     when %rds_db.Properties.EnablePerformanceInsights exists {
-        %rds_db.Properties.EnablePerformanceInsights == 'true'
+        %rds_db.Properties.EnablePerformanceInsights in ['true', true]
     }
 }

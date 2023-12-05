@@ -1,0 +1,157 @@
+{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "rest_api_compression_max",
+    "rest_api_compression_min",
+    "rest_api_compression_exists"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_compression_on",
+    "ensure_default_compression_on",
+    "check_default_ttl",
+    "check_max_ttl"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_loggroups_have_retention"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_codeguru_association"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "from_port_is_ssh",
+    "to_port_is_ssh",
+    "port_range_includes_ssh"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "emr_target_spot_config_configured",
+    "emr_use_spot"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "check_glue_job_allocatedcapacity",
+    "check_glue_job_timeout",
+    "check_glue_job_workernodes",
+    "check_glue_job_maxcapacity"
+  ],
+  "compliant": []
+}RDS_with_DBParameterGroup.yaml Status = FAIL
+FAILED rules
+graviton.guard/check_graviton_instance_usage_in_rds           FAIL
+---
+{
+  "name": "",
+  "metadata": {},
+  "status": "FAIL",
+  "not_compliant": [
+    {
+      "Rule": {
+        "name": "check_graviton_instance_usage_in_rds",
+        "metadata": {},
+        "messages": {
+          "custom_message": null,
+          "error_message": null
+        },
+        "checks": [
+          {
+            "Clause": {
+              "Binary": {
+                "context": " %rds_db[*].Properties.DBInstanceClass IN  %valid_instance_classes",
+                "messages": {
+                  "custom_message": null,
+                  "error_message": "Check was not compliant as property [/Resources/MyDB/Properties/DBInstanceClass[L:40,C:23]] was not present in [(resolved, Path=[L:0,C:0] Value=[\"db.m6g\",\"db.m6gd\",\"db.m7g\",\"db.x2g\",\"db.r6g\",\"db.r7g\",\"db.r6gd\",\"db.t4g\"])]"
+                },
+                "check": {
+                  "InResolved": {
+                    "from": {
+                      "path": "/Resources/MyDB/Properties/DBInstanceClass",
+                      "value": "db.t2.small"
+                    },
+                    "to": [
+                      {
+                        "path": "",
+                        "value": [
+                          "db.m6g",
+                          "db.m6gd",
+                          "db.m7g",
+                          "db.x2g",
+                          "db.r6g",
+                          "db.r7g",
+                          "db.r6gd",
+                          "db.t4g"
+                        ]
+                      }
+                    ],
+                    "comparison": [
+                      "In",
+                      false
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "not_applicable": [
+    "check_graviton_architecture_usage_in_lambda"
+  ],
+  "compliant": []
+}{
+  "name": "",
+  "metadata": {},
+  "status": "PASS",
+  "not_compliant": [],
+  "not_applicable": [],
+  "compliant": [
+    "check_rds_performanceinsights_enabled"
+  ]
+}{
+  "name": "",
+  "metadata": {},
+  "status": "SKIP",
+  "not_compliant": [],
+  "not_applicable": [
+    "ensure_all_buckets_have_lifecycle_configuration"
+  ],
+  "compliant": []
+}

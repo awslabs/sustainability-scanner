@@ -13,7 +13,7 @@ let cf_def_ttl_policies = Resources.*[
 rule ensure_default_compression_on when %cf !empty {
     let compression = %cf.Properties.DistributionConfig.DefaultCacheBehavior.Compress
     %compression exists
-    %compression == true
+    %compression in ['true', true]
 }
 
 rule ensure_compression_on when %cf !empty {
@@ -22,7 +22,7 @@ rule ensure_compression_on when %cf !empty {
             when CacheBehaviors exists {
                 CacheBehaviors[*] {
                     Compress exists
-                    Compress == true
+                    Compress in ['true', true]
                 }
             }
         }
