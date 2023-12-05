@@ -19,7 +19,7 @@
         Properties:
           DistributionConfig: 
             DefaultCacheBehavior:
-              Compress: false
+              Compress: "false"
   expectations:
     rules:
       ensure_default_compression_on: FAIL
@@ -80,7 +80,7 @@
               - PathPattern: pattern/1
                 Compress: true
               - PathPattern: pattern/2
-                Compress: true
+                Compress: "true"
   expectations:
     rules:
       ensure_compression_on: PASS
