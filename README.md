@@ -49,7 +49,7 @@ There are two options to install the tool:
 To install the project via pip, you simply have to call
 
 ```sh
-pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.0.1
+pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.2.2
 ```
 
 #### Scanning an AWS CloudFormation Template
@@ -62,7 +62,7 @@ susscanner --help
 Usage: susscanner [OPTIONS] [CloudFormation Template]
 
 Arguments:
-  [CloudFormation Template]  The AWS CloudFormation template to use  [required]
+  [CloudFormation Template]  The AWS CloudFormation template(s) to use  [required]
 
 Options:
   -v, --version  Show the application version and exit.
@@ -72,7 +72,7 @@ Options:
 You can scan a template by using the command:
 
 ```sh
-susscanner [path/to/cloudformation/template]
+susscanner [path/to/cloudformation/template_or_templates]
 ```
 
 You should see an output like below;
@@ -81,7 +81,8 @@ You should see an output like below;
 susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
-    "version": "1.0.1",
+    "file": "test.yaml",
+    "version": "1.2.2",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -138,7 +139,7 @@ You can scan a template by using the command;
 
 ```sh
 #from the root directory of the project
-python3 -m susscanner [path/to/cloudformation/template]
+python3 -m susscanner [path/to/cloudformation/template_or_templates]
 ```
 
 ## Sustainability Score
@@ -211,7 +212,8 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 ```
 {
     "title": "Sustainability Scanner Report",
-    "version": "1.0.1",
+    "file": "cloudformation.yaml",
+    "version": "1.2.2",
     "sustainability_score": 0,
     "failed_rules": []
 }
