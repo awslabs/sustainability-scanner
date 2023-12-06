@@ -3,7 +3,8 @@ import subprocess
 import typer
 import susscanner as ss
 
-from typing import Optional
+from pathlib import Path
+from typing import Optional, List
 
 
 app = typer.Typer(add_completion=False)
@@ -25,12 +26,7 @@ def _version_callback(value: bool) -> None:
 
 
 def main(
-    cfn_template: str = typer.Argument(
-        ...,
-        help="The CloudFormation template to use",
-        metavar="[CloudFormation Template]",
-        show_default=False,
-    ),
+    cfn_template: List[Path],
     version: Optional[bool] = typer.Option(
         None,
         "--version",
@@ -81,16 +77,19 @@ def main(
         raise typer.Exit(3)
 
     rules = f"{ss.DIR_PATH}/rules/"
-    command = f"cfn-guard validate -o json --rules {rules} --data {cfn_template}"
-    args = shlex.split(command)
+    for template in cfn_template:
+        command = f"cfn-guard validate -o json --rules {rules} --data {template}"
+        args = shlex.split(command)
 
-    cfn_guard_output = subprocess.Popen(
-        args,
-        shell=False,
-        universal_newlines=True,
-        stdout=subprocess.PIPE,
-    ).stdout.read()
+        cfn_guard_output = subprocess.Popen(
+            args,
+            shell=False,
+            universal_newlines=True,
+            stdout=subprocess.PIPE,
+        ).stdout.read()
 
-    ss.Scan.filter_results(cfn_guard_output=cfn_guard_output)
+        ss.Scan.filter_results(
+            cfn_guard_output=cfn_guard_output, template_name=str(template)
+        )
 
     return 0
