@@ -31,6 +31,25 @@
     rules:
       check_rds_performanceinsights_enabled: PASS
 
+- name: TestRDSWithPerfInsightsBoolean
+  input:
+    Resources:
+      RDSInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBName: 'DBName'
+          AllocatedStorage: '5'
+          DBInstanceClass: db.m6g
+          Engine: MySQL
+          EngineVersion: 5.6.19
+          MasterUsername: 'DBUser'
+          MasterUserPassword: 'DBPassword'
+          DBParameterGroupName: 'MyRDSParamGroup'
+          EnablePerformanceInsights: true
+  expectations:
+    rules:
+      check_rds_performanceinsights_enabled: PASS
+
 - name: TestRDSWithoutPerfInsights
   input:
     Resources:

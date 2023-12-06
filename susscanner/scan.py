@@ -88,7 +88,7 @@ class Scan:
 
     @staticmethod
     def get_path(obj: dict):
-        """ This method finds path key in a dictionary, even if path is located in nested dictionaries.
+        """This method finds path key in a dictionary, even if path is located in nested dictionaries.
 
         Args:
             obj: dictionary to search in
@@ -98,13 +98,13 @@ class Scan:
         """
         for key in obj:
             value = obj[key]
-            if key == 'path':
+            if key == "path":
                 return value
             elif type(value) is dict:
                 return Scan.get_path(value)
 
     def parse_checks(self, checks):
-        """ This method parses failed checks output and returned resources part of it. Each resource contains
+        """This method parses failed checks output and returned resources part of it. Each resource contains
         resource name and line number in CF template.
 
         Args:
@@ -141,7 +141,7 @@ class Scan:
 
     @staticmethod
     def get_object_to_parse(jsons):
-        """ Returns dictionary object which should be parsed for the results. Only the first one of the inout list
+        """Returns dictionary object which should be parsed for the results. Only the first one of the inout list
         will be returned because remaining ones are rules which passed.
 
         Args:
@@ -217,7 +217,7 @@ class Scan:
 
         return sustainability_score
 
-    def parse_cfn_guard_output(self, cfn_guard_output: str) -> dict:
+    def parse_cfn_guard_output(self, cfn_guard_output: str, template_name: str) -> dict:
         """This function parses JSON output of the cfn guard.
 
         Args:
@@ -236,14 +236,16 @@ class Scan:
         """
         md = self.load_metadata()
         failed_rules = []
-        matcher = re.match(r".*(}|^)([A-Za-z\d_.-]+) Status = FAIL", cfn_guard_output, re.DOTALL)
+        matcher = re.match(
+            r".*(}|^)([A-Za-z\d_.-]+) Status = FAIL", cfn_guard_output, re.DOTALL
+        )
         if matcher:
             file_name = matcher.group(2)
             failed_pieces = cfn_guard_output.split(file_name + " ")
             for p in failed_pieces:
                 delim = p.find("---")
                 if delim >= 0:
-                    json_text = p[delim + 3:]
+                    json_text = p[delim + 3 :]
                     jsons = json_text.split("}{")
                     if len(jsons) > 0:
                         obj = Scan.get_object_to_parse(jsons)
@@ -253,12 +255,13 @@ class Scan:
 
         return {
             "title": "Sustainability Scanner Report",
+            "file": template_name,
             "version": ss.__version__,
             "sustainability_score": sustainability_score,
             "failed_rules": failed_rules,
         }
 
     @classmethod
-    def filter_results(cls, cfn_guard_output):
-        parsed = cls().parse_cfn_guard_output(cfn_guard_output)
+    def filter_results(cls, cfn_guard_output, template_name):
+        parsed = cls().parse_cfn_guard_output(cfn_guard_output, template_name)
         print(json.dumps(parsed, indent=4))
