@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="susscanner",
-    version="1.0.1",
+    version="1.2.2",
     author="AWS",
     packages=find_packages(include=["susscanner", "susscanner.*"]),
     package_data={"": ["rules_metadata.json", "rules/*", "rules/test_cases/*"]},
