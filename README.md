@@ -10,7 +10,7 @@ SusScanner comes with a set of rule implementations aligned to the [AWS Well-Arc
 **Sustainability Scanner in action**  
 ![demo of susscanner][demo]
 
-[demo]: demo.gif
+[demo]: https://raw.githubusercontent.com/awslabs/sustainability-scanner/main/demo.gif
 
 Scroll down to the getting started section to get detailed examples on how to use the tool.
 
@@ -49,7 +49,7 @@ There are two options to install the tool:
 To install the project via pip, you simply have to call
 
 ```sh
-pip3 install git+https://github.com/awslabs/sustainability-scanner.git@v1.2.2
+pip3 install sustainability-scanner
 ```
 
 #### Scanning an AWS CloudFormation Template
@@ -82,7 +82,7 @@ susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
     "file": "test.yaml",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -213,7 +213,7 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 {
     "title": "Sustainability Scanner Report",
     "file": "cloudformation.yaml",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "sustainability_score": 0,
     "failed_rules": []
 }
