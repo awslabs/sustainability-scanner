@@ -3,6 +3,8 @@ import re
 
 import susscanner as ss
 
+from pathlib import Path
+
 
 class Scan:
     """The class takes output of CFN Guard in JSON format, parses it and
@@ -70,15 +72,24 @@ class Scan:
     will be one more checks block.
     """
 
-    def load_metadata(self):
+    def load_metadata(self, rules_metadata: Path):
         """Loads rules metadata from metadata file. Only enabled rules are loaded.
+
+        Args:
+            rules_metadata (Path): location of the rule metadata.
+            Will be a Path value if specefied, otherwise None.
 
         Returns:
             [dictionary] - keys are rule names and values are metadata object
             as defined in the file.
         """
         result = {}
-        data = json.loads(ss.CONFIG_FILE_PATH.read_text())
+        # check if a rules metadata location is specified with -r or --rules
+        if rules_metadata:  # rules metadata is specified
+            data = json.loads(rules_metadata.resolve().read_text())
+        else:  # not specified, using the defaults
+            data = json.loads(ss.CONFIG_FILE_PATH.read_text())
+
         for group in data["all_rules"].items():
             if group[1]["enabled"]:
                 for rule in group[1]["rules"]:
@@ -103,7 +114,7 @@ class Scan:
             elif type(value) is dict:
                 return Scan.get_path(value)
 
-    def parse_checks(self, checks):
+    def parse_checks(self, checks: list):
         """This method parses failed checks output and returned resources part of it. Each resource contains
         resource name and line number in CF template.
 
@@ -212,12 +223,17 @@ class Scan:
                 raise ValueError(
                     f"The severity level of rule {failed_rule['rule_name']} was set "
                     + f"to {rule_severity} this type is not supported. "
-                    + f"Supported types are LOW, MEDIUM, HIGH"
+                    + "Supported types are LOW, MEDIUM, HIGH"
                 )
 
         return sustainability_score
 
-    def parse_cfn_guard_output(self, cfn_guard_output: str, template_name: str) -> dict:
+    def parse_cfn_guard_output(
+        self,
+        cfn_guard_output: str,
+        template_name: str,
+        rules_metadata: Path,
+    ) -> dict:
         """This function parses JSON output of the cfn guard.
 
         Args:
@@ -234,7 +250,7 @@ class Scan:
                "resources": [{"name": "", "line": 123}]
             }
         """
-        md = self.load_metadata()
+        md = self.load_metadata(rules_metadata)
         failed_rules = []
         matcher = re.match(
             r".*(}|^)([A-Za-z\d_.-]+) Status = FAIL", cfn_guard_output, re.DOTALL
@@ -262,6 +278,8 @@ class Scan:
         }
 
     @classmethod
-    def filter_results(cls, cfn_guard_output, template_name):
-        parsed = cls().parse_cfn_guard_output(cfn_guard_output, template_name)
+    def filter_results(cls, cfn_guard_output, template_name, rules_metadata):
+        parsed = cls().parse_cfn_guard_output(
+            cfn_guard_output, template_name, rules_metadata
+        )
         print(json.dumps(parsed, indent=4))
