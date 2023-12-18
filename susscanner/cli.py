@@ -1,6 +1,7 @@
 import shlex
 import subprocess
 import typer
+import json
 import susscanner as ss
 
 from pathlib import Path
@@ -25,6 +26,35 @@ def _version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
+def _rules_metadata_callback(rules_metadata: Path) -> Path:
+    """
+    Checks if the provided rules metadata is valid
+
+    Args:
+        rules_metadata (Path): The path of the config file
+
+    Raises:
+        typer.Exit: exit the program
+    """
+    if rules_metadata is None:
+        return rules_metadata
+
+    # check if the rules metadata exists
+    if not rules_metadata.is_file():
+        raise typer.BadParameter(
+            f"Specified rules metadata file '{rules_metadata}' is not a file"
+        )
+
+    # check if the json inside the rules metadata is valid
+    try:
+        json.loads(rules_metadata.read_text())
+    except ValueError:
+        raise typer.BadParameter(
+            f"Specified rules metadata file '{rules_metadata}' is not valid json"
+        )
+    return rules_metadata
+
+
 def main(
     cfn_template: List[Path],
     version: Optional[bool] = typer.Option(
@@ -35,13 +65,21 @@ def main(
         callback=_version_callback,
         is_eager=True,
     ),
+    rules_metadata: Path = typer.Option(
+        None,
+        "--rules",
+        "-r",
+        help="Location for a custom rules metadata file.",
+        callback=_rules_metadata_callback,
+        show_default=False,
+    ),
 ) -> int:
     """ """  # additional docstring to surpress the comments in the cli output
     """
-    This function constitutes the main flow of the program. First, it checks if 
+    This function constitutes the main flow of the program. First, it checks if
     a valid config file exists. It then checks whether the specified Cloudformation
     template can be found. Given the input checks passed, "cfn-guard validate" is run
-    to execute our rules on the provided template. The output of Cloudformation Guard 
+    to execute our rules on the provided template. The output of Cloudformation Guard
     is structured and enriched to result in the Sustainability Scanner report.
 
     Args:
@@ -77,6 +115,7 @@ def main(
         raise typer.Exit(3)
 
     rules = f"{ss.DIR_PATH}/rules/"
+
     for template in cfn_template:
         command = f"cfn-guard validate -o json --rules {rules} --data {template}"
         args = shlex.split(command)
@@ -89,7 +128,9 @@ def main(
         ).stdout.read()
 
         ss.Scan.filter_results(
-            cfn_guard_output=cfn_guard_output, template_name=str(template)
+            cfn_guard_output=cfn_guard_output,
+            template_name=str(template),
+            rules_metadata=rules_metadata,
         )
 
     return 0
