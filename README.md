@@ -65,8 +65,9 @@ Arguments:
   [CloudFormation Template]  The AWS CloudFormation template(s) to use  [required]
 
 Options:
-  -v, --version  Show the application version and exit.
-  --help         Show this message and exit.
+  --version  -v      Show the application version and exit.
+  --rules    -r PATH Location for a custom rules metadata file. 
+  --help             Show this message and exit.
 ```
 
 You can scan a template by using the command:
@@ -82,7 +83,7 @@ susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
     "file": "test.yaml",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -104,6 +105,8 @@ susscanner test.yaml
 }
 ```
 
+If you want to use your own `rules_metadata` file you can specify one using the `-r` or `--rules` options.  
+
 ### 2. Install from source
 #### Clone this project
 
@@ -114,7 +117,7 @@ git clone https://github.com/awslabs/sustainability-scanner.git
 #### Move into the project directory
 
 ```sh
-cd susscanner
+cd sustainability-scanner
 ```
 
 #### Create and activate virtual environment (optional)
@@ -213,7 +216,7 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 {
     "title": "Sustainability Scanner Report",
     "file": "cloudformation.yaml",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "sustainability_score": 0,
     "failed_rules": []
 }
