@@ -17,23 +17,13 @@ let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance']
 rule from_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
     %sec_groups_ingress.Properties {
         when FromPort exists {
-            when FromPort is_string {
-                FromPort != "22"
-            }
-            when FromPort !is_string {
-                FromPort != 22
-            }
+            FromPort !in ["22", 22]
         }
     }
     %sec_groups.Properties {
         SecurityGroupIngress[*] {
             when FromPort exists {
-                when FromPort is_string {
-                    FromPort != "22"
-                }
-                when FromPort !is_string {
-                    FromPort != 22
-                }
+                FromPort !in ["22", 22]
             }
         }
     }
@@ -42,23 +32,13 @@ rule from_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
 rule to_port_is_ssh when %sec_groups_ingress !empty OR %sec_groups !empty {
     %sec_groups_ingress.Properties {
         when ToPort exists {
-            when ToPort is_string {
-                ToPort != "22"
-            }
-            when ToPort !is_string {
-                ToPort != 22
-            }
+            ToPort !in ["22", 22]
         }
     }
     %sec_groups.Properties {
         SecurityGroupIngress[*] {
             when ToPort exists {
-                when ToPort is_string {
-                    ToPort != "22"
-                }
-                when ToPort !is_string {
-                    ToPort != 22
-                }
+                ToPort !in ["22", 22]
             }
         }
     }

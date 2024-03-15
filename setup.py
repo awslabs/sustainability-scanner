@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="sustainability-scanner",
-    version="1.2.4",
+    version="1.2.5",
     author="AWS",
     description="Sustainability Scanner",
     long_description_content_type="text/markdown",

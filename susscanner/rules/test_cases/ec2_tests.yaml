@@ -163,3 +163,23 @@
       to_port_is_ssh: PASS
       from_port_is_ssh: PASS
       port_range_includes_ssh: PASS
+
+- name: TestParametrizedPort
+  input:
+    Parameters:
+      ContainerPort:
+        Description: The port on which the container is running
+        Type: Number
+        Default: 6001
+    Resources:
+      EC2-1:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          SecurityGroupIngress:
+          - FromPort: !Ref ContainerPort
+            ToPort: !Ref ContainerPort
+  expectations:
+    rules:
+      to_port_is_ssh: PASS
+      from_port_is_ssh: PASS
+      port_range_includes_ssh: PASS
