@@ -1,5 +1,7 @@
 import shlex
 import subprocess
+from enum import Enum
+
 import typer
 import json
 import susscanner as ss
@@ -9,6 +11,11 @@ from typing import Optional, List
 
 
 app = typer.Typer(add_completion=False)
+
+
+class TemplateType(str, Enum):
+    cloudformation = "cf",
+    cdk = "cdk"
 
 
 def _version_callback(value: bool) -> None:
@@ -55,6 +62,42 @@ def _rules_metadata_callback(rules_metadata: Path) -> Path:
     return rules_metadata
 
 
+def run_command(command: str) -> str:
+    """
+    Runs a command.
+
+    Args:
+        command (str): The command to run.
+    """
+    args = shlex.split(command)
+
+    output = subprocess.Popen(
+        args,
+        shell=False,
+        universal_newlines=True,
+        stdout=subprocess.PIPE,
+    ).stdout.read()
+    return output
+
+
+def preprocess_cdk(file_name: str) -> str:
+    """
+    Preprocesses CDK file.
+
+    Args:
+        file_name (str): CDK file name.
+
+    Raises:
+        typer.Exit: exit the program
+    """
+    typer.echo(f"Will process CDK file {file_name}")
+
+    template_name = "susscanner_template.yaml"
+    run_command(f"cdk synth {file_name} > {template_name}")
+
+    return template_name
+
+
 def main(
     cfn_template: List[Path],
     version: Optional[bool] = typer.Option(
@@ -73,6 +116,14 @@ def main(
         callback=_rules_metadata_callback,
         show_default=False,
     ),
+    template_format: Optional[TemplateType] = typer.Option(
+        TemplateType.cloudformation.value,
+        "--format",
+        "-f",
+        help="Template format",
+        show_default=True,
+        is_eager=False,
+    )
 ) -> int:
     """ """  # additional docstring to surpress the comments in the cli output
     """
@@ -116,7 +167,12 @@ def main(
 
     rules = Path(ss.DIR_PATH).joinpath(Path("rules")).__str__()
 
-    for template in cfn_template:
+    print(f"format is " + str(template_format.value))
+    for t in cfn_template:
+        if template_format == TemplateType.cdk:
+            template = preprocess_cdk(str(t))
+        else:
+            template = str(t)
         command = rf"cfn-guard validate -o json --rules '{rules}' --data '{template}'"
         args = shlex.split(command)
 
