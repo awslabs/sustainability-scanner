@@ -1,5 +1,6 @@
 import os 
 import unittest
+from pathlib import Path
 
 from susscanner import Scan
 
@@ -8,7 +9,7 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__) + '/test-data/')
 
 class TestScan(unittest.TestCase):
     def test_empty_input(self):
-        result = Scan.parse_cfn_guard_output(Scan(), '')
+        result = Scan.parse_cfn_guard_output(Scan(), '', 'empty.yaml', Path('../susscanner/rules_metadata.json'))
         self.assertEqual(len(result['failed_rules']), 0)
 
     def test_input_with_1_violation(self):
@@ -17,7 +18,7 @@ class TestScan(unittest.TestCase):
         # with one modification - To-From ports changed from 22-22, to 20-23
         with open(TEST_DATA_DIR + 'test-output-1.txt') as f:
             data = f.read()
-        result = Scan.parse_cfn_guard_output(Scan(), data)
+        result = Scan.parse_cfn_guard_output(Scan(), data, 'quickref-ec2.yaml', Path('../susscanner/rules_metadata.json'))
         fr = result['failed_rules']
         self.assertEqual(1, len(fr))
         self.assertEqual(fr[0]['rule_name'], 'port_range_includes_ssh')
@@ -27,7 +28,7 @@ class TestScan(unittest.TestCase):
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-applications-eu-west-2.html
         with open(TEST_DATA_DIR + 'wordpress-output.txt') as f:
             data = f.read()
-        result = Scan.parse_cfn_guard_output(Scan(), data)
+        result = Scan.parse_cfn_guard_output(Scan(), data, 'sample.yaml', Path('../susscanner/rules_metadata.json'))
         fr = result['failed_rules']
         self.assertEqual(0, len(fr))
 
@@ -36,7 +37,8 @@ class TestScan(unittest.TestCase):
         # https://github.com/aws-samples/ecs-refarch-cloudformation/blob/master/infrastructure/ecs-cluster.yaml
         with open(TEST_DATA_DIR + 'ecs-cluster-output.txt') as f:
             data = f.read()
-        result = Scan.parse_cfn_guard_output(Scan(), data)
+        result = Scan.parse_cfn_guard_output(Scan(), data, 'ecs-cluster.yaml',
+                                             Path('../susscanner/rules_metadata.json'))
         fr = result['failed_rules']
         self.assertEqual(0, len(fr))
 
@@ -45,7 +47,8 @@ class TestScan(unittest.TestCase):
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-appframeworks-eu-west-1.html
         with open(TEST_DATA_DIR + 'lamp-output.txt') as f:
             data = f.read()
-        result = Scan.parse_cfn_guard_output(Scan(), data)
+        result = Scan.parse_cfn_guard_output(Scan(), data, 'appframeworks.yaml',
+                                             Path('../susscanner/rules_metadata.json'))
         fr = result['failed_rules']
         self.assertEqual(2, len(fr))
         self.assertEqual(fr[0]['rule_name'], 'check_graviton_instance_usage_in_rds')
@@ -57,7 +60,7 @@ class TestScan(unittest.TestCase):
         # with one modification - Added `EnablePerformanceInsights: 'true'`
         with open(TEST_DATA_DIR + "rds-output.txt") as f:
             data = f.read()
-        result = Scan.parse_cfn_guard_output(Scan(), data)
+        result = Scan.parse_cfn_guard_output(Scan(), data, 'rds.yaml', Path('../susscanner/rules_metadata.json'))
         fr = result["failed_rules"]
         self.assertEqual(1, len(fr))
         self.assertEqual(fr[0]["rule_name"], "check_graviton_instance_usage_in_rds")

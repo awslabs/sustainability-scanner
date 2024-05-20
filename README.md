@@ -83,7 +83,7 @@ susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
     "file": "test.yaml",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -216,7 +216,7 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 {
     "title": "Sustainability Scanner Report",
     "file": "cloudformation.yaml",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "sustainability_score": 0,
     "failed_rules": []
 }

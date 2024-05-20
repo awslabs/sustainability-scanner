@@ -253,7 +253,7 @@ class Scan:
         md = self.load_metadata(rules_metadata)
         failed_rules = []
         matcher = re.match(
-            r".*(}|^)([A-Za-z\d_.-]+) Status = FAIL", cfn_guard_output, re.DOTALL
+            r".*(}|^)([A-Za-z\d_./-]+) Status = FAIL", cfn_guard_output, re.DOTALL
         )
         if matcher:
             file_name = matcher.group(2)
