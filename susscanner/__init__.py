@@ -7,7 +7,7 @@ from susscanner.cli import main
 
 
 __app_name__ = "susscanner"
-__version__ = "1.2.5"
+__version__ = "1.2.7"
 
 (
     SUCCESS,
@@ -31,6 +31,6 @@ ERRORS = {
     ID_ERROR: "id error",
 }
 
-DIR_PATH = absolute_path = os.path.dirname(__file__)
+DIR_PATH = os.path.dirname(__file__)
 CONFIG_FILE_NAME = "rules_metadata.json"
 CONFIG_FILE_PATH = Path(os.path.join(DIR_PATH, CONFIG_FILE_NAME))
