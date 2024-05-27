@@ -114,10 +114,10 @@ def main(
         )
         raise typer.Exit(3)
 
-    rules = f"{ss.DIR_PATH}/rules/"
+    rules = Path(ss.DIR_PATH).joinpath(Path("rules")).__str__()
 
     for template in cfn_template:
-        command = f"cfn-guard validate -o json --rules {rules} --data {template}"
+        command = rf"cfn-guard validate -o json --rules '{rules}' --data '{template}'"
         args = shlex.split(command)
 
         cfn_guard_output = subprocess.Popen(
