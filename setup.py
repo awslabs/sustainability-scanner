@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="sustainability-scanner",
-    version="1.2.9",
+    version="1.3.0",
     author="AWS",
     description="Sustainability Scanner",
     long_description_content_type="text/markdown",
@@ -12,7 +12,7 @@ setup(
         "": ["rules_metadata.json", "rules/*", "rules/test_cases/*", "static/*"]
     },
     include_package_data=True,
-    install_requires=["typer==0.7.0"],
+    install_requires=["typer==0.12.4"],
     url="http://github.com/awslabs/sustainability-scanner",
     python_requires=">=3.6",
     license="MIT-0",

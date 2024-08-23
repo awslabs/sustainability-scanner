@@ -17,7 +17,7 @@ def init_app(cfn_template: list) -> int:
     for path in cfn_template:
         # check if the config file exists
         if not path.is_file():
-            return ss.FILE_ERROR
+            return ss.FILE_NOT_FOUND
 
         # check if the json inside the config file is valid
         if not json.loads(ss.CONFIG_FILE_PATH.read_text()):

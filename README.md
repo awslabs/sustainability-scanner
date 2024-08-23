@@ -59,21 +59,29 @@ You should see an output like below:
 
 ```sh
 susscanner --help
-Usage: susscanner [OPTIONS] [CloudFormation Template]
-
-Arguments:
-  [CloudFormation Template]  The AWS CloudFormation template(s) to use  [required]
-
-Options:
-  --version  -v      Show the application version and exit.
-  --rules    -r PATH Location for a custom rules metadata file. 
-  --help             Show this message and exit.
+ Usage: susscanner [OPTIONS] CFN_TEMPLATE...                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                      
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    cfn_template      CFN_TEMPLATE...  List of template names (for CloudFormation format) or stack name (for CDK format) [default: None] [required]     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --version  -v                Show the application's version and exit.                                                                                    │
+│ --rules    -r      PATH      Location for a custom rules metadata file.                                                                                  │
+│ --format   -f      [cf|cdk]  Template format [default: cf]                                                                                               │
+│ --help                       Show this message and exit.                                                                                                 │   
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 You can scan a template by using the command:
 
 ```sh
 susscanner [path/to/cloudformation/template_or_templates]
+```
+
+Or you can scan a CDK stack by using the command, **NB! you have to run this command in your CDK application root directory**:
+
+```sh
+susscanner -f cdk <STACK_NAME>
 ```
 
 You should see an output like below;
@@ -83,7 +91,7 @@ susscanner test.yaml
 {
     "title": "Sustainability Scanner Report",
     "file": "test.yaml",
-    "version": "1.2.7",
+    "version": "1.3.0",
     "sustainability_score": 8,
     "failed_rules": [
         {
@@ -216,7 +224,7 @@ You will get a Sustainability Scanner Report without failed rules. This looks as
 {
     "title": "Sustainability Scanner Report",
     "file": "cloudformation.yaml",
-    "version": "1.2.7",
+    "version": "1.3.0",
     "sustainability_score": 0,
     "failed_rules": []
 }

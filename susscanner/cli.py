@@ -1,5 +1,6 @@
 import shlex
 import subprocess
+import os
 from enum import Enum
 
 import typer
@@ -7,8 +8,7 @@ import json
 import susscanner as ss
 
 from pathlib import Path
-from typing import Optional, List
-
+from typing import Optional, List, Annotated
 
 app = typer.Typer(add_completion=False)
 
@@ -80,26 +80,25 @@ def run_command(command: str) -> str:
     return output
 
 
-def preprocess_cdk(file_name: str) -> str:
+def preprocess_cdk(stack_name: str) -> str:
     """
     Preprocesses CDK file.
 
     Args:
-        file_name (str): CDK file name.
+        stack_name (str): CDK stack name.
 
     Raises:
         typer.Exit: exit the program
     """
-    typer.echo(f"Will process CDK file {file_name}")
 
     template_name = "susscanner_template.yaml"
-    run_command(f"cdk synth {file_name} > {template_name}")
-
+    os.system(f"cdk synth {stack_name} > {template_name}")
     return template_name
 
 
 def main(
-    cfn_template: List[Path],
+    cfn_template: Annotated[List[Path], typer.Argument(
+        help="List of template names (for CloudFormation format) or stack name (for CDK format)")],
     version: Optional[bool] = typer.Option(
         None,
         "--version",
@@ -134,7 +133,7 @@ def main(
     is structured and enriched to result in the Sustainability Scanner report.
 
     Args:
-        cfn_template (str, optional): the CloudFormation template.
+        cfn_template (str, optional): the CloudFormation template or stack name (for CDK format).
         version (Optional[bool], optional): the version of the program.
 
     Raises:
@@ -146,9 +145,9 @@ def main(
         int: returns the exit status, 0 for successful execution
     """
     app_init_error = ss.init_app(cfn_template)
-    if app_init_error == ss.FILE_ERROR:
+    if app_init_error == ss.FILE_NOT_FOUND and template_format == TemplateType.cloudformation.value:
         typer.secho(
-            f'Config file not found "{ss.ERRORS[app_init_error]}"',
+            f'Template file not found "{ss.ERRORS[app_init_error]}"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
@@ -167,21 +166,13 @@ def main(
 
     rules = Path(ss.DIR_PATH).joinpath(Path("rules")).__str__()
 
-    print(f"format is " + str(template_format.value))
     for t in cfn_template:
         if template_format == TemplateType.cdk:
             template = preprocess_cdk(str(t))
         else:
             template = str(t)
         command = rf"cfn-guard validate -o json --rules '{rules}' --data '{template}'"
-        args = shlex.split(command)
-
-        cfn_guard_output = subprocess.Popen(
-            args,
-            shell=False,
-            universal_newlines=True,
-            stdout=subprocess.PIPE,
-        ).stdout.read()
+        cfn_guard_output = run_command(command)
 
         ss.Scan.filter_results(
             cfn_guard_output=cfn_guard_output,
