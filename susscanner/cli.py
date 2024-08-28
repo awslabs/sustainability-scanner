@@ -92,7 +92,9 @@ def preprocess_cdk(stack_name: str) -> str:
     """
 
     template_name = "susscanner_template.yaml"
-    os.system(f"cdk synth {stack_name} > {template_name}")
+    with open(template_name, "w") as f:
+        output = run_command(f"cdk synth {stack_name}")
+        f.write(output)
     return template_name
 
 
