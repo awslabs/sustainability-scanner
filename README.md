@@ -39,6 +39,7 @@ To install Sustainability Scanner please follow the following instructions.
   * an open-source general-purpose policy-as-code evaluation tool which SusScanner builds on top of
 * Python 3.6 or later
   * check version with `python3 -V`
+* [AWS CDK] (https://docs.aws.amazon.com/cdk/v2/guide/home.html), if you use CDK to define your AWS infrastructure.
 
 ### Getting Started
 
