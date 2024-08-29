@@ -1,14 +1,21 @@
 import shlex
 import subprocess
+import shutil
+from enum import Enum
+
 import typer
 import json
 import susscanner as ss
 
 from pathlib import Path
-from typing import Optional, List
-
+from typing import Optional, List, Annotated
 
 app = typer.Typer(add_completion=False)
+
+
+class TemplateType(str, Enum):
+    cloudformation = ("cf",)
+    cdk = "cdk"
 
 
 def _version_callback(value: bool) -> None:
@@ -55,8 +62,52 @@ def _rules_metadata_callback(rules_metadata: Path) -> Path:
     return rules_metadata
 
 
+def run_command(command: str) -> str:
+    """
+    Runs a command.
+
+    Args:
+        command (str): The command to run.
+    """
+    args = shlex.split(command)
+
+    # Get the full path of the command to ensure execution in Windows
+    args[0] = shutil.which(args[0])
+
+    output = subprocess.Popen(
+        args,
+        shell=False,
+        universal_newlines=True,
+        stdout=subprocess.PIPE,
+    ).stdout.read()
+    return output
+
+
+def preprocess_cdk(stack_name: str) -> str:
+    """
+    Preprocesses CDK file.
+
+    Args:
+        stack_name (str): CDK stack name.
+
+    Raises:
+        typer.Exit: exit the program
+    """
+
+    template_name = "susscanner_template.yaml"
+    with open(template_name, "w") as f:
+        output = run_command(f"cdk synth {stack_name}")
+        f.write(output)
+    return template_name
+
+
 def main(
-    cfn_template: List[Path],
+    cfn_template: Annotated[
+        List[Path],
+        typer.Argument(
+            help="List of template names (for CloudFormation format) or stack name (for CDK format)"
+        ),
+    ],
     version: Optional[bool] = typer.Option(
         None,
         "--version",
@@ -73,6 +124,14 @@ def main(
         callback=_rules_metadata_callback,
         show_default=False,
     ),
+    template_format: Optional[TemplateType] = typer.Option(
+        TemplateType.cloudformation.value,
+        "--format",
+        "-f",
+        help="Template format",
+        show_default=True,
+        is_eager=False,
+    ),
 ) -> int:
     """ """  # additional docstring to surpress the comments in the cli output
     """
@@ -83,7 +142,7 @@ def main(
     is structured and enriched to result in the Sustainability Scanner report.
 
     Args:
-        cfn_template (str, optional): the CloudFormation template.
+        cfn_template (str, optional): the CloudFormation template or stack name (for CDK format).
         version (Optional[bool], optional): the version of the program.
 
     Raises:
@@ -95,9 +154,12 @@ def main(
         int: returns the exit status, 0 for successful execution
     """
     app_init_error = ss.init_app(cfn_template)
-    if app_init_error == ss.FILE_ERROR:
+    if (
+        app_init_error == ss.FILE_NOT_FOUND
+        and template_format == TemplateType.cloudformation.value
+    ):
         typer.secho(
-            f'Config file not found "{ss.ERRORS[app_init_error]}"',
+            f'Template file not found "{ss.ERRORS[app_init_error]}"',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
@@ -116,16 +178,13 @@ def main(
 
     rules = Path(ss.DIR_PATH).joinpath(Path("rules")).__str__()
 
-    for template in cfn_template:
+    for t in cfn_template:
+        if template_format == TemplateType.cdk:
+            template = preprocess_cdk(str(t))
+        else:
+            template = str(t)
         command = rf"cfn-guard validate -o json --rules '{rules}' --data '{template}'"
-        args = shlex.split(command)
-
-        cfn_guard_output = subprocess.Popen(
-            args,
-            shell=False,
-            universal_newlines=True,
-            stdout=subprocess.PIPE,
-        ).stdout.read()
+        cfn_guard_output = run_command(command)
 
         ss.Scan.filter_results(
             cfn_guard_output=cfn_guard_output,

@@ -7,11 +7,11 @@ from susscanner.cli import main
 
 
 __app_name__ = "susscanner"
-__version__ = "1.2.7"
+__version__ = "1.3.0"
 
 (
     SUCCESS,
-    FILE_ERROR,
+    FILE_NOT_FOUND,
     JSON_ERROR,
     TEMPLATE_ERROR,
     ID_ERROR,
@@ -25,7 +25,7 @@ __version__ = "1.2.7"
 ) = range(4)
 
 ERRORS = {
-    FILE_ERROR: "config file error",
+    FILE_NOT_FOUND: "config file error",
     JSON_ERROR: "json error",
     TEMPLATE_ERROR: "CloudFormation Template error",
     ID_ERROR: "id error",
