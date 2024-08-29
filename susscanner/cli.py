@@ -1,6 +1,6 @@
 import shlex
 import subprocess
-import os
+import shutil
 from enum import Enum
 
 import typer
@@ -14,7 +14,7 @@ app = typer.Typer(add_completion=False)
 
 
 class TemplateType(str, Enum):
-    cloudformation = "cf",
+    cloudformation = ("cf",)
     cdk = "cdk"
 
 
@@ -71,6 +71,9 @@ def run_command(command: str) -> str:
     """
     args = shlex.split(command)
 
+    # Get the full path of the command to ensure execution in Windows
+    args[0] = shutil.which(args[0])
+
     output = subprocess.Popen(
         args,
         shell=False,
@@ -99,8 +102,12 @@ def preprocess_cdk(stack_name: str) -> str:
 
 
 def main(
-    cfn_template: Annotated[List[Path], typer.Argument(
-        help="List of template names (for CloudFormation format) or stack name (for CDK format)")],
+    cfn_template: Annotated[
+        List[Path],
+        typer.Argument(
+            help="List of template names (for CloudFormation format) or stack name (for CDK format)"
+        ),
+    ],
     version: Optional[bool] = typer.Option(
         None,
         "--version",
@@ -124,7 +131,7 @@ def main(
         help="Template format",
         show_default=True,
         is_eager=False,
-    )
+    ),
 ) -> int:
     """ """  # additional docstring to surpress the comments in the cli output
     """
@@ -147,7 +154,10 @@ def main(
         int: returns the exit status, 0 for successful execution
     """
     app_init_error = ss.init_app(cfn_template)
-    if app_init_error == ss.FILE_NOT_FOUND and template_format == TemplateType.cloudformation.value:
+    if (
+        app_init_error == ss.FILE_NOT_FOUND
+        and template_format == TemplateType.cloudformation.value
+    ):
         typer.secho(
             f'Template file not found "{ss.ERRORS[app_init_error]}"',
             fg=typer.colors.RED,
