@@ -1,0 +1,54 @@
+name: tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unittest:
+    name: py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      # Report every failing Python version, not just the first.
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install the package rather than relying on PYTHONPATH, so the tests run
+      # against the same layout users get from pip, including package_data such
+      # as rules_metadata.json and the .guard rule files.
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+
+      # cfn-guard is deliberately NOT installed. The CLI tests stub the
+      # subprocess boundary and assert on the argument list handed to
+      # cfn-guard, which is where the crafted-filename scan bypass lived.
+      # Keeping the binary out also proves the suite has no hidden dependency
+      # on it.
+      - name: Verify the console script is installed
+        run: susscanner --version
+
+      - name: Run tests
+        run: python -m unittest discover --start-directory tests --verbose

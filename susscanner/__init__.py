@@ -17,6 +17,18 @@ __version__ = "1.3.0"
     ID_ERROR,
 ) = range(5)
 
+# Exit code used when the underlying scanner (cfn-guard / cdk) could not be
+# executed or failed in a way that means "we did not get a trustworthy result".
+# Deliberately a distinct code so callers can tell "scan clean" (0) apart from
+# "scan did not run" -- previously both produced 0.
+SCANNER_ERROR = 5
+
+# cfn-guard signals "ran fine but found violations" with a NON-ZERO status
+# (0 on success, 5 when rules fail; other codes vary by version), so a non-zero
+# exit is not by itself an execution failure. We therefore do not enumerate
+# "good" exit codes -- see cli._require_trustworthy_output, which decides based
+# on whether usable output was actually produced.
+
 (
     _,
     SCORE_LOW,

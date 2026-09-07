@@ -14,7 +14,9 @@ setup(
     include_package_data=True,
     install_requires=["typer==0.12.4"],
     url="http://github.com/awslabs/sustainability-scanner",
-    python_requires=">=3.6",
+    # 3.9 is the real floor: susscanner/cli.py imports Annotated from typing,
+    # which PEP 593 added in 3.9, so the package cannot import on 3.6-3.8.
+    python_requires=">=3.9",
     license="MIT-0",
     entry_points={
         "console_scripts": ["susscanner=susscanner.__main__:main"],
