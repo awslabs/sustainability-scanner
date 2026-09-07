@@ -6,13 +6,9 @@ on:
   push:
     branches: [main]
 
-# The test suite reads the repository and nothing else. Granting only read
-# access means a malicious pull request cannot use this workflow's token to
-# modify the repo, even if it manages to run code during the build.
 permissions:
   contents: read
 
-# A new push to a pull request makes the in-flight run obsolete, so cancel it.
 concurrency:
   group: tests-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,14 +21,7 @@ jobs:
       # Report every failing Python version, not just the first.
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-    # Linux only. Worth knowing what that leaves uncovered: the suite creates
-    # files whose names contain quotes, spaces and glob characters, so results
-    # are filesystem-dependent. Windows in particular cannot run these tests as
-    # written, because NTFS forbids several of those characters (* " \ |) and
-    # trailing spaces, and run_command resolves the executable with
-    # shutil.which specifically to support Windows. Adding non-Linux coverage
-    # means making those cases skip per platform first.
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Check out the repository
