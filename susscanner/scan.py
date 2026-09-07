@@ -252,11 +252,24 @@ class Scan:
         """
         md = self.load_metadata(rules_metadata)
         failed_rules = []
-        matcher = re.match(
-            r".*(}|^)([\d\S]+) Status = FAIL", cfn_guard_output, re.DOTALL
+        # cfn-guard reports the verdict on its own line, as
+        #   }<file name> Status = FAIL
+        # where the leading "}" is the closing brace of the preceding JSON
+        # block. The file name is echoed back verbatim from --data, so it may
+        # contain ANY character that is legal in a path, including spaces.
+        #
+        # This previously used [\d\S]+ to capture the name. \S excludes
+        # whitespace, so a template whose name contained a space never matched,
+        # the whole block was skipped, and a violating template was reported
+        # with zero failed rules and a score of 0. Match to the end of the line
+        # instead of guessing at the character set.
+        matcher = re.search(
+            r"^\}?(?P<file_name>.*?) Status = FAIL[ \t]*$",
+            cfn_guard_output,
+            re.MULTILINE,
         )
         if matcher:
-            file_name = matcher.group(2)
+            file_name = matcher.group("file_name")
             failed_pieces = cfn_guard_output.split(file_name + " ")
             for p in failed_pieces:
                 delim = p.find("---")
