@@ -19,27 +19,20 @@ concurrency:
 
 jobs:
   unittest:
-    name: py${{ matrix.python-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: py${{ matrix.python-version }}
+    runs-on: ubuntu-latest
     strategy:
-      # Report every failing combination, not just the first.
+      # Report every failing Python version, not just the first.
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        include:
-          # One macOS entry to catch platform-specific path handling. The suite
-          # exercises filenames containing quotes and spaces, which behave
-          # differently across filesystems.
-          - os: macos-latest
-            python-version: "3.12"
-        # windows-latest is intentionally absent. run_command resolves the
-        # executable with shutil.which specifically to support Windows, so
-        # Windows coverage would be valuable, but the regression tests create
-        # files named with characters NTFS forbids (* " \ | and trailing
-        # spaces). Adding Windows requires making those cases skip per
-        # platform first; tracked as follow-up work rather than papered over
-        # with a green check that skips the security-relevant tests.
+    # Linux only. Worth knowing what that leaves uncovered: the suite creates
+    # files whose names contain quotes, spaces and glob characters, so results
+    # are filesystem-dependent. Windows in particular cannot run these tests as
+    # written, because NTFS forbids several of those characters (* " \ |) and
+    # trailing spaces, and run_command resolves the executable with
+    # shutil.which specifically to support Windows. Adding non-Linux coverage
+    # means making those cases skip per platform first.
 
     steps:
       - name: Check out the repository
