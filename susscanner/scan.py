@@ -256,13 +256,9 @@ class Scan:
         #   }<file name> Status = FAIL
         # where the leading "}" is the closing brace of the preceding JSON
         # block. The file name is echoed back verbatim from --data, so it may
-        # contain ANY character that is legal in a path, including spaces.
-        #
-        # This previously used [\d\S]+ to capture the name. \S excludes
-        # whitespace, so a template whose name contained a space never matched,
-        # the whole block was skipped, and a violating template was reported
-        # with zero failed rules and a score of 0. Match to the end of the line
-        # instead of guessing at the character set.
+        # contain any character that is legal in a path, including whitespace.
+        # Match to the end of the line rather than constraining the character
+        # set, so no valid file name is silently skipped.
         matcher = re.search(
             r"^\}?(?P<file_name>.*?) Status = FAIL[ \t]*$",
             cfn_guard_output,

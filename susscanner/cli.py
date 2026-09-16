@@ -105,8 +105,8 @@ def run_command(args: Sequence[str]) -> subprocess.CompletedProcess:
     args = [str(a) for a in args]
 
     # Resolve the full path of the executable to ensure execution on Windows.
-    # shutil.which returns None when the program is missing; previously that
-    # None was handed straight to Popen and surfaced as an opaque TypeError.
+    # shutil.which returns None when the program is missing, so check before
+    # handing it to subprocess.
     executable = shutil.which(args[0])
     if executable is None:
         typer.secho(
@@ -259,9 +259,6 @@ def main(
         app_init_error == ss.FILE_NOT_FOUND
         and template_format == TemplateType.cloudformation.value
     ):
-        # Report the offending paths. This previously printed the *config file*
-        # error string ("config file error") for a missing template, which was
-        # misleading, and named no path at all.
         missing = [str(p) for p in cfn_template if not p.is_file()]
         typer.secho(
             "CloudFormation template not found (or is not a regular file): "

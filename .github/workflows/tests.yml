@@ -21,7 +21,7 @@ jobs:
       # Report every failing Python version, not just the first.
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - name: Check out the repository
@@ -42,11 +42,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install .
 
-      # cfn-guard is deliberately NOT installed. The CLI tests stub the
-      # subprocess boundary and assert on the argument list handed to
-      # cfn-guard, which is where the crafted-filename scan bypass lived.
-      # Keeping the binary out also proves the suite has no hidden dependency
-      # on it.
+      # cfn-guard is intentionally not installed. The CLI tests stub the
+      # subprocess boundary and assert on the arguments passed to the scanner,
+      # so the suite needs no external binary and stays fast. Leaving it out
+      # keeps that independence verified rather than assumed.
       - name: Verify the console script is installed
         run: susscanner --version
 
