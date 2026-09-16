@@ -14,7 +14,7 @@ setup(
     include_package_data=True,
     install_requires=["typer==0.12.4"],
     url="http://github.com/awslabs/sustainability-scanner",
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     license="MIT-0",
     entry_points={
         "console_scripts": ["susscanner=susscanner.__main__:main"],

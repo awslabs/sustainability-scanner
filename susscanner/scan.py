@@ -252,11 +252,20 @@ class Scan:
         """
         md = self.load_metadata(rules_metadata)
         failed_rules = []
-        matcher = re.match(
-            r".*(}|^)([\d\S]+) Status = FAIL", cfn_guard_output, re.DOTALL
+        # cfn-guard reports the verdict on its own line, as
+        #   }<file name> Status = FAIL
+        # where the leading "}" is the closing brace of the preceding JSON
+        # block. The file name is echoed back verbatim from --data, so it may
+        # contain any character that is legal in a path, including whitespace.
+        # Match to the end of the line rather than constraining the character
+        # set, so no valid file name is silently skipped.
+        matcher = re.search(
+            r"^\}?(?P<file_name>.*?) Status = FAIL[ \t]*$",
+            cfn_guard_output,
+            re.MULTILINE,
         )
         if matcher:
-            file_name = matcher.group(2)
+            file_name = matcher.group("file_name")
             failed_pieces = cfn_guard_output.split(file_name + " ")
             for p in failed_pieces:
                 delim = p.find("---")
